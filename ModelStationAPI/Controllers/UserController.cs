@@ -6,45 +6,58 @@ using System.Threading.Tasks;
 using ModelStationAPI.Entities;
 using ModelStationAPI.Models;
 using AutoMapper;
+using ModelStationAPI.Services;
 
 namespace ModelStationAPI.Controllers
 {
     [Route("api/v1/user")]
     public class UserController : Controller
     {
-        private readonly ModelStationDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public UserController(ModelStationDbContext dbContext, IMapper mapper)
+        public UserController(IUserService userService)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<UserDTO>> GetAll()
         {
-            var users = _dbContext
-                .Users
-                .ToList();
-
-            var usersDTO = _mapper.Map<List<UserDTO>>(users);
+            var usersDTO = _userService.GetAll();
             return Ok(usersDTO);
         }
 
         [HttpGet("{id}")]
         public ActionResult<UserDTO> GetById([FromRoute] int id)
         {
-            var user = _dbContext
-                .Users
-                .FirstOrDefault(u => u.Id == id);
+            var userDTO = _userService.GetById(id);
 
-
-            if (user == null)
+            if (userDTO == null)
                 return NotFound();
 
-            var userDTO = _mapper.Map<UserDTO>(user);
             return Ok(userDTO);
+        }
+
+        [HttpPost]
+        public ActionResult CreateUser([FromBody] CreateUserDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int createdId = _userService.Create(dto);
+            return Created($"/api/user/v1/user/{createdId}", null);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            bool isDeleted = _userService.Delete(id);
+
+            if (isDeleted)
+                return NoContent();
+
+            return NotFound();
         }
     }
 }

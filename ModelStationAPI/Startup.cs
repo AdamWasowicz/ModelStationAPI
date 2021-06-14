@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ModelStationAPI.Entities;
+using ModelStationAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace ModelStationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Controllers
             services.AddControllers();
 
             //DbContext
@@ -34,6 +36,9 @@ namespace ModelStationAPI
 
             //AutoMapper
             services.AddAutoMapper(this.GetType().Assembly);
+
+            //UserService
+            services.AddScoped<IUserService, UserService>();
 
 
 

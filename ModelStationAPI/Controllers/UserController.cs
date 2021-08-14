@@ -12,6 +12,7 @@ using ModelStationAPI.Interfaces;
 namespace ModelStationAPI.Controllers
 {
     [Route("api/v1/user")]
+    [ApiController]
     public class UserController : Controller
     {
         private readonly IUserService _userService;

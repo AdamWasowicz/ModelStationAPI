@@ -24,11 +24,20 @@ namespace ModelStationAPI.Validation
                         context.AddFailure("Email", "TAKEN");
                 });
 
+
             RuleFor(x => x.Password)
                 .MinimumLength(8);
 
+
             RuleFor(x => x.UserName)
                 .MinimumLength(8);
+
+            RuleFor(x => x.UserName).Custom((value, context) =>
+            {
+                var userNameInUse = dbContext.Users.Any(u => u.UserName == value);
+                if (userNameInUse)
+                    context.AddFailure("UserName", "TAKEN");
+            });
         }
     }
 }

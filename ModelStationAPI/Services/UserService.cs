@@ -7,6 +7,7 @@ using ModelStationAPI.Entities;
 using ModelStationAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using ModelStationAPI.Interfaces;
 
 namespace ModelStationAPI.Services
 {

@@ -12,13 +12,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ModelStationAPI.Entities;
+using ModelStationAPI.Interfaces;
 using ModelStationAPI.Models;
 using ModelStationAPI.Services;
 using ModelStationAPI.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace ModelStationAPI
@@ -35,6 +35,7 @@ namespace ModelStationAPI
         {
             var authenticationSettings = new AuthenticationSettings();
             Configuration.GetSection("Authentication").Bind(authenticationSettings);
+            services.AddSingleton(authenticationSettings);
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = "Bearer";
@@ -70,6 +71,9 @@ namespace ModelStationAPI
 
             //UserService
             services.AddScoped<IUserService, UserService>();
+
+            //AccountService
+            services.AddScoped<IAccountService, AccountService>();
 
             //Hasher
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -107,7 +111,7 @@ namespace ModelStationAPI
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

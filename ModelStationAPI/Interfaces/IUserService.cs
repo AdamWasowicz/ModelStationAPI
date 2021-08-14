@@ -1,7 +1,7 @@
 ﻿using ModelStationAPI.Models;
 using System.Collections.Generic;
 
-namespace ModelStationAPI.Services
+namespace ModelStationAPI.Interfaces
 {
     public interface IUserService
     {

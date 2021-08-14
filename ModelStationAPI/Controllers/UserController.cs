@@ -7,6 +7,7 @@ using ModelStationAPI.Entities;
 using ModelStationAPI.Models;
 using AutoMapper;
 using ModelStationAPI.Services;
+using ModelStationAPI.Interfaces;
 
 namespace ModelStationAPI.Controllers
 {

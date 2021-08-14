@@ -46,6 +46,7 @@ namespace ModelStationAPI.Controllers
                 return BadRequest(ModelState);
 
             int createdId = _userService.Create(dto);
+
             return Created($"/api/user/v1/user/{createdId}", null);
         }
 

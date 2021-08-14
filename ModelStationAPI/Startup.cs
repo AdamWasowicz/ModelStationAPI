@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,7 +11,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ModelStationAPI.Entities;
+using ModelStationAPI.Models;
 using ModelStationAPI.Services;
+using ModelStationAPI.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +47,12 @@ namespace ModelStationAPI
 
             //Hasher
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            //FluentValidation
+            services.AddFluentValidation();
+
+            //CreateUserDTO_Validator
+            services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTO_Validator>();
 
 
 

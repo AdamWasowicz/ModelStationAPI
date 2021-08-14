@@ -28,12 +28,12 @@ namespace ModelStationAPI
                 .ForMember(m => m.PostId, c => c.MapFrom(s => s.Post.Id));
 
 
+            //User to UserDTO
+            CreateMap<User, UserDTO>();
+
+
             //CreateUserDTO to User
-            CreateMap<CreateUserDTO, User>()
-                .ForMember(m => m.PasswordHash, c => c.MapFrom(s => s.Password))
-                .ForMember(m => m.IsActive, c => c.NullSubstitute(true))
-                .ForMember(m => m.IsBanned, c => c.NullSubstitute(false))
-                .ForMember(m => m.RegisterDate, c => c.NullSubstitute(DateTime.Now));
+            CreateMap<CreateUserDTO, User>();
         }
     }
 }

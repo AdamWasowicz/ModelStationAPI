@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ModelStationAPI.Entities;
 using ModelStationAPI.Models;
 using AutoMapper;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace ModelStationAPI.Services
 {
@@ -14,11 +14,13 @@ namespace ModelStationAPI.Services
     {
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserService(ModelStationDbContext dbContext, IMapper mapper)
+        public UserService(ModelStationDbContext dbContext, IMapper mapper, IPasswordHasher<User> passwordHasher)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
         public UserDTO GetById(int id)
@@ -48,6 +50,13 @@ namespace ModelStationAPI.Services
         public int Create(CreateUserDTO dto)
         {
             var user = _mapper.Map<User>(dto);
+
+            user.IsActive = true;
+            user.IsBanned = false;
+            user.RegisterDate = DateTime.Now;
+            user.LastEditDate = user.RegisterDate;
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
+
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
 

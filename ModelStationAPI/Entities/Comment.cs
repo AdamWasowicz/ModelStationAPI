@@ -15,6 +15,7 @@ namespace ModelStationAPI.Entities
         public bool IsBanned { get; set; }
         public string Text { get; set; }
         public int? ParentCommentId { get; set; }
+        public int Likes { get; set; }
 
 
         public int UserId { get; set; }

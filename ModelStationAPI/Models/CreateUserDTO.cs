@@ -13,19 +13,6 @@ namespace ModelStationAPI.Models
         public string Email { get; set; }
 
         [Required]
-        [MaxLength(64)]
-        public string Name { get; set; }
-
-        [MaxLength(64)]
-        public string? SecondName { get; set; }
-
-        [Required]
-        [MaxLength(64)]
-        public string Surname { get; set; }
-        public DateTime? BirthDate { get; set; }
-        public char? Gender { get; set; }
-
-        [Required]
         public string UserName { get; set; }
 
         [Required]

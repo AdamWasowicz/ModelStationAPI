@@ -87,10 +87,6 @@ namespace ModelStationAPI.Entities
                 .HasMaxLength(64);
 
             modelBuilder.Entity<User>()
-                .Property(p => p.SecondName)
-                .HasMaxLength(64);
-
-            modelBuilder.Entity<User>()
                 .Property(p => p.Surname)
                 .HasMaxLength(64);
 

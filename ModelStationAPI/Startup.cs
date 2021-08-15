@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ModelStationAPI.Authorization;
 using ModelStationAPI.Entities;
 using ModelStationAPI.Interfaces;
 using ModelStationAPI.Middleware;
@@ -54,6 +56,16 @@ namespace ModelStationAPI
                 };
             });
         }
+        public void AddAuthorizationPolicy(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsUser", builder => builder.AddRequirements(new HasAccessLevelAtLeast(3)));
+                options.AddPolicy("IsModeator", builder => builder.AddRequirements(new HasAccessLevelAtLeast(6)));
+                options.AddPolicy("IsAdmin", builder => builder.AddRequirements(new HasAccessLevelAtLeast(10)));
+
+            });
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -61,6 +73,9 @@ namespace ModelStationAPI
             //Authentication
             AddAuthentication(services);
 
+            //Authentication
+            AddAuthorizationPolicy(services);
+            
             //Controllers
             services.AddControllers();
 
@@ -73,6 +88,9 @@ namespace ModelStationAPI
             //Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccountService, AccountService>();
+
+            //AuthorizationHandlers
+            services.AddScoped<IAuthorizationHandler, HasAccessLevelAtLeastHandler>();
 
             //Middleware
             services.AddScoped<ErrorHandlingMiddleware>();
@@ -107,16 +125,16 @@ namespace ModelStationAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModelStationAPI v1"));
             }
 
-
-
-            app.UseAuthentication();
-
             //Middleware
             app.UseMiddleware<ErrorHandlingMiddleware>();
+
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

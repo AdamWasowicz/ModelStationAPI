@@ -8,6 +8,7 @@ using ModelStationAPI.Models;
 using AutoMapper;
 using ModelStationAPI.Services;
 using ModelStationAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModelStationAPI.Controllers
 {
@@ -23,6 +24,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "IsUser")]
         public ActionResult<IEnumerable<UserDTO>> GetAll()
         {
             var usersDTO = _userService.GetAll();
@@ -30,6 +32,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<UserDTO> GetById([FromRoute] int id)
         {
             var userDTO = _userService.GetById(id);

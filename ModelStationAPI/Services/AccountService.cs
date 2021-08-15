@@ -37,11 +37,12 @@ namespace ModelStationAPI.Services
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
             if (result == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid username or password");
-
+            var test = user;
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim("UserName", user.UserName.ToString())
+                new Claim("UserName", user.UserName.ToString()),
+                new Claim("Role", user.RoleId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

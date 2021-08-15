@@ -138,6 +138,27 @@ namespace ModelStationAPI.Migrations
                     b.ToTable("PostCategories");
                 });
 
+            modelBuilder.Entity("ModelStationAPI.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("ModelStationAPI.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -178,6 +199,9 @@ namespace ModelStationAPI.Migrations
                     b.Property<DateTime>("RegisterDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Surname")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
@@ -188,6 +212,8 @@ namespace ModelStationAPI.Migrations
                         .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -228,6 +254,17 @@ namespace ModelStationAPI.Migrations
                     b.Navigation("PostCategory");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ModelStationAPI.Entities.User", b =>
+                {
+                    b.HasOne("ModelStationAPI.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("ModelStationAPI.Entities.Post", b =>

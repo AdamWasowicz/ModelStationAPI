@@ -8,9 +8,9 @@ namespace ModelStationAPI.Models
     public class PostDTO
     {
         public int Id { get; set; }
+        public string PostHash { get; set; }
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime LastEditDate { get; set; }
         public string? ImageSource { get; set; }
         public string Text { get; set; }
         public bool IsActive { get; set; }

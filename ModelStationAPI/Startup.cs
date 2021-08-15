@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ModelStationAPI.Entities;
 using ModelStationAPI.Interfaces;
+using ModelStationAPI.Middleware;
 using ModelStationAPI.Models;
 using ModelStationAPI.Services;
 using ModelStationAPI.Validation;
@@ -69,11 +70,12 @@ namespace ModelStationAPI
             //AutoMapper
             services.AddAutoMapper(this.GetType().Assembly);
 
-            //UserService
+            //Services
             services.AddScoped<IUserService, UserService>();
-
-            //AccountService
             services.AddScoped<IAccountService, AccountService>();
+
+            //Middleware
+            services.AddScoped<ErrorHandlingMiddleware>();
 
             //Hasher
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -105,13 +107,16 @@ namespace ModelStationAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModelStationAPI v1"));
             }
 
+
+
             app.UseAuthentication();
+
+            //Middleware
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

@@ -8,6 +8,7 @@ using ModelStationAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using ModelStationAPI.Interfaces;
+using ModelStationAPI.Exceptions;
 
 namespace ModelStationAPI.Services
 {
@@ -32,7 +33,7 @@ namespace ModelStationAPI.Services
 
 
             if (user == null)
-                return null;
+                throw new NotFoundException("User does not exist");
 
             var result = _mapper.Map<UserDTO>(user);
             return result;
@@ -57,6 +58,7 @@ namespace ModelStationAPI.Services
             user.RegisterDate = DateTime.Now;
             user.LastEditDate = user.RegisterDate;
             user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
+            user.RoleId = 1;
 
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
@@ -71,7 +73,7 @@ namespace ModelStationAPI.Services
                 .FirstOrDefault(u => u.Id == id);
 
             if (user is null)
-                return false;
+                throw new NotFoundException("User does not exist");
 
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();

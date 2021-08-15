@@ -9,14 +9,12 @@ namespace ModelStationAPI.Models
     public class CreateUserDTO
     {
         [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
         public string UserName { get; set; }
 
         [Required]
-        [MaxLength(64)]
         public string Password { get; set; }
     }
 }

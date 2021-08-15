@@ -8,6 +8,7 @@ namespace ModelStationAPI.Entities
     public class Post
     {
         public int Id { get; set; }
+        public string PostHash { get; set; }
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }

@@ -26,11 +26,15 @@ namespace ModelStationAPI.Validation
 
 
             RuleFor(x => x.Password)
-                .MinimumLength(8);
+                .NotEmpty()
+                .MinimumLength(8)
+                .MaximumLength(64);
 
 
             RuleFor(x => x.UserName)
-                .MinimumLength(8);
+                .NotEmpty()
+                .MinimumLength(8)
+                .MaximumLength(64);
 
             RuleFor(x => x.UserName).Custom((value, context) =>
             {

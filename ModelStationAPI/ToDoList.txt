@@ -1,0 +1,14 @@
+﻿Important:
+	-CreatePostDTO Validation
+
+	-PostCategory Controller
+	-PostCategory Service
+	-PostCategory Service Interface
+
+	-Comment Controller
+	-Comment Service
+	-Comment Service Interface
+
+
+Not Important:
+	-Seeder

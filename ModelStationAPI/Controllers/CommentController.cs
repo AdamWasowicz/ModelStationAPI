@@ -7,6 +7,7 @@ using ModelStationAPI.Entities;
 using ModelStationAPI.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using ModelStationAPI.Interfaces;
 
 namespace ModelStationAPI.Controllers
 {
@@ -15,41 +16,76 @@ namespace ModelStationAPI.Controllers
     {
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ICommentService _commentService;
 
-        public CommentController(ModelStationDbContext dbContext, IMapper mapper)
+        public CommentController(ModelStationDbContext dbContext, IMapper mapper, ICommentService commentService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _commentService = commentService;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<CommentDTO>> GetAll()
         {
-            var comments = _dbContext
-                .Comments
-                .Include(c => c.User)
-                .Include(c => c.Post)
-                .ToList();
-
-            var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
+            var commentsDTO = _commentService.GetAll();
             return Ok(commentsDTO);
         }
 
         [HttpGet("{id}")]
         public ActionResult<CommentDTO> GetById([FromRoute] int id)
         {
-            var comment = _dbContext
-                .Comments
-                .Include(c => c.User)
-                .Include(c => c.Post)
-                .FirstOrDefault();
+            var commentsDTO = _commentService.GetById(id);
 
-            if (comment == null)
+            if (commentsDTO == null)
                 return NotFound();
 
-            var commentDTO = _mapper.Map<CommentDTO>(comment);
-            return Ok(commentDTO);      
+            return Ok(commentsDTO);      
         }
 
+        [HttpGet("post/{id}")]
+        public ActionResult<IEnumerable<CommentDTO>> GetCommentsByPostId([FromRoute] int id)
+        {
+            var commentsDTO = _commentService.GetCommentsByPostId(id);
+
+            if (commentsDTO == null)
+                return NotFound();
+
+            return Ok(commentsDTO);
+        }
+
+        [HttpGet("user/{id}")]
+        public ActionResult<IEnumerable<CommentDTO>> GetCommentsByUserId([FromRoute] int id)
+        {
+            var commentsDTO = _commentService.GetCommentsByUserId(id);
+
+            if (commentsDTO == null)
+                return NotFound();
+
+            return Ok(commentsDTO);
+        }
+
+        [HttpPost]
+        public ActionResult CreateComment([FromBody] CreateCommentDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int createdId = _commentService.Create(dto);
+
+            return Created(createdId.ToString(), null);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            bool isDeleted = _commentService.Delete(id);
+
+            if (isDeleted)
+                return NoContent();
+
+            return NotFound();
+        }
     }
 }

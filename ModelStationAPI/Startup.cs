@@ -88,6 +88,7 @@ namespace ModelStationAPI
             //Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             //AuthorizationHandlers
             services.AddScoped<IAuthorizationHandler, HasAccessLevelAtLeastHandler>();

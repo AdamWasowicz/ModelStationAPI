@@ -34,6 +34,10 @@ namespace ModelStationAPI
 
             //CreateUserDTO to User
             CreateMap<CreateUserDTO, User>();
+
+
+            //CreateCommentDTO to Comment
+            CreateMap<CreateCommentDTO, Comment>();
         }
     }
 }

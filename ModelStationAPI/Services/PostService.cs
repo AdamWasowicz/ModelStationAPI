@@ -95,7 +95,7 @@ namespace ModelStationAPI.Services
             return result;
         }
 
-        public List<PostDTO> GetPostsByCategoryId(int categoryId)
+        public List<PostDTO> GetPostsByPostCategoryId(int categoryId)
         {
             var posts = _dbContext
                 .Posts

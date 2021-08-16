@@ -12,7 +12,7 @@ namespace ModelStationAPI.Interfaces
         bool Delete(int id);
         List<PostDTO> GetAll();
         PostDTO GetById(int id);
-        List<PostDTO> GetPostsByCategoryId(int categoryId);
+        List<PostDTO> GetPostsByPostCategoryId(int categoryId);
         List<PostDTO> GetPostsByPostCategoryName(string categoryName);
         List<PostDTO> GetPostsByUserId(int userId);
         List<PostDTO> GetPostsByUserName(string userName);

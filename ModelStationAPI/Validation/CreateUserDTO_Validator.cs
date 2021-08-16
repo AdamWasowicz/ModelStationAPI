@@ -14,9 +14,7 @@ namespace ModelStationAPI.Validation
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .EmailAddress();
-
-            RuleFor(x => x.Email)
+                .EmailAddress()
                 .Custom((value, context) =>
                 {
                     var emailInUse = dbContext.Users.Any(u => u.Email == value);
@@ -34,14 +32,13 @@ namespace ModelStationAPI.Validation
             RuleFor(x => x.UserName)
                 .NotEmpty()
                 .MinimumLength(8)
-                .MaximumLength(64);
-
-            RuleFor(x => x.UserName).Custom((value, context) =>
-            {
-                var userNameInUse = dbContext.Users.Any(u => u.UserName == value);
-                if (userNameInUse)
-                    context.AddFailure("UserName", "TAKEN");
-            });
+                .MaximumLength(64)
+                .Custom((value, context) =>
+                {
+                    var userNameInUse = dbContext.Users.Any(u => u.UserName == value);
+                    if (userNameInUse)
+                        context.AddFailure("UserName", "TAKEN");
+                });
         }
     }
 }

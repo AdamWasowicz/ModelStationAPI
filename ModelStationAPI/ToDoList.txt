@@ -1,6 +1,4 @@
 ﻿Important:
-	-CreatePostDTO Validation
-
 	-PostCategory Controller
 	-PostCategory Service
 	-PostCategory Service Interface

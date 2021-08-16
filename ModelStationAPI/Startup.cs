@@ -101,9 +101,8 @@ namespace ModelStationAPI
 
             //FluentValidation
             services.AddFluentValidation();
-
-            //CreateUserDTO_Validator
             services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTO_Validator>();
+            services.AddScoped<IValidator<CreateCommentDTO>, CreateCommentDTO_Validator>();
 
 
 

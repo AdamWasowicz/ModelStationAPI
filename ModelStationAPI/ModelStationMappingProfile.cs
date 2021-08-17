@@ -13,12 +13,14 @@ namespace ModelStationAPI
         //Mapping Profiles
         public ModelStationMappingProfile()
         {
-            //Post => PostDTO
+            //Post to PostDTO
             CreateMap<Post, PostDTO>()
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.User.Id))
                 .ForMember(m => m.UserName, c => c.MapFrom(s => s.User.UserName))
                 .ForMember(m => m.PostCategoryId, c => c.MapFrom(s => s.PostCategory.Id))
                 .ForMember(m => m.PostCategoryName, c => c.MapFrom(s => s.PostCategory.Name));
+            //CreatePostDTO to Post
+            CreateMap<CreatePostDTO, Post>();
 
 
             //Comment to CommentDTO
@@ -26,22 +28,26 @@ namespace ModelStationAPI
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.User.Id))
                 .ForMember(m => m.UserName, c => c.MapFrom(s => s.User.UserName))
                 .ForMember(m => m.PostId, c => c.MapFrom(s => s.Post.Id));
-
-
-            //User to UserDTO
-            CreateMap<User, UserDTO>();
-
-
-            //CreateUserDTO to User
-            CreateMap<CreateUserDTO, User>();
-
-
             //CreateCommentDTO to Comment
             CreateMap<CreateCommentDTO, Comment>();
 
 
-            //CreatePostDTO to Post
-            CreateMap<CreatePostDTO, Post>();
+            //User to UserDTO
+            CreateMap<User, UserDTO>();
+            //CreateUserDTO to User
+            CreateMap<CreateUserDTO, User>();
+
+
+            //PostCategory to PostCategoryDTO
+            CreateMap<PostCategory, PostCategoryDTO>();
+            //CreatePostCategoryDTO to PostCategory
+            CreateMap<CreatePostCategoryDTO, PostCategory>();
+
+
+
+        
+
+
         }
     }
 }

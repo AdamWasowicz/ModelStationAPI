@@ -1,11 +1,9 @@
 ﻿Important:
+	-Unit Tests
+
 	-PostCategory Controller
 	-PostCategory Service
 	-PostCategory Service Interface
-
-	-Comment Controller
-	-Comment Service
-	-Comment Service Interface
 
 
 Not Important:

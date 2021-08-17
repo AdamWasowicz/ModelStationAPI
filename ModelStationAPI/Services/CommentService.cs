@@ -90,6 +90,9 @@ namespace ModelStationAPI.Services
                 .Where(c => c.PostId == postId)
                 .ToList();
 
+            if (comments.Count == 0)
+                throw new NotFoundException("Search yelded no result");
+
             var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
             return commentsDTO;
         }
@@ -102,6 +105,9 @@ namespace ModelStationAPI.Services
                 .Include(c => c.Post)
                 .Where(c => c.UserId == userId)
                 .ToList();
+
+            if (comments.Count == 0)
+                throw new NotFoundException("Search yelded no result");
 
             var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
             return commentsDTO;

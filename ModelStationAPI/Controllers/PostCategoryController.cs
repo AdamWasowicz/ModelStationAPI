@@ -48,7 +48,7 @@ namespace ModelStationAPI.Controllers
             return Created(createdId.ToString(), null);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeletePostCategory([FromRoute] int id)
         {
             bool isDeleted = _postCategoryService.Delete(id);

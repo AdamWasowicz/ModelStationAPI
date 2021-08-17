@@ -38,8 +38,6 @@ namespace ModelStationAPI.Services
             if (result == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid username or password");
 
-            var test = user;
-
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

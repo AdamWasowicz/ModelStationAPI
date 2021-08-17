@@ -106,7 +106,8 @@ namespace ModelStationAPI
             services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTO_Validator>();
             services.AddScoped<IValidator<CreateCommentDTO>, CreateCommentDTO_Validator>();
             services.AddScoped<IValidator<CreatePostCategoryDTO>, CreatePostCategoryDTO_Validator>();
-            
+            services.AddScoped<IValidator<CreatePostDTO>, CreatePostDTO_Validator>();
+
             //Swagger
             services.AddSwaggerGen(c =>
             {

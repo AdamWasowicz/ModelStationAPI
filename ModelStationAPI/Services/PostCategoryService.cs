@@ -37,7 +37,7 @@ namespace ModelStationAPI.Services
             var postCategory = _dbContext
                 .PostCategories
                 .Where(pc => pc.Id == id)
-                .ToList();
+                .FirstOrDefault();
 
             if (postCategory == null)
                 throw new NotFoundException("There is no post category with that Id");

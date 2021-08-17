@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModelStationAPI.Entities;
 
 namespace ModelStationAPI.Migrations
 {
     [DbContext(typeof(ModelStationDbContext))]
-    partial class ModelStationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210817103408_fix_Post_PostCategoryId")]
+    partial class fix_Post_PostCategoryId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

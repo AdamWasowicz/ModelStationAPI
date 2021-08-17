@@ -65,7 +65,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("user/{id}")]
-        public ActionResult<List<PostDTO>> GetPostByUserId(int id)
+        public ActionResult<List<PostDTO>> GetPostByUserId([FromRoute] int id)
         {
             var postsDTO = _postService.GetPostsByUserId(id);
 
@@ -76,7 +76,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("postcategory/{id}")]
-        public ActionResult<List<PostDTO>> GetPostByCategoryId(int id)
+        public ActionResult<List<PostDTO>> GetPostByCategoryId([FromRoute] int id)
         {
             var postsDTO = _postService.GetPostsByPostCategoryId(id);
 
@@ -87,7 +87,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("user/{name}")]
-        public ActionResult<List<PostDTO>> GetPostByUserName(string name)
+        public ActionResult<List<PostDTO>> GetPostByUserName([FromRoute] string name)
         {
             var postsDTO = _postService.GetPostsByUserName(name);
 
@@ -98,7 +98,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("postcategory/{name}")]
-        public ActionResult<List<PostDTO>> GetPostByCategoryName(string name)
+        public ActionResult<List<PostDTO>> GetPostByCategoryName([FromRoute] string name)
         {
             var postsDTO = _postService.GetPostsByPostCategoryName(name);
 

@@ -31,7 +31,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PostCategoryDTO> GetById(int id)
+        public ActionResult<PostCategoryDTO> GetById([FromRoute] int id)
         {
             var postCategoryDTO = _postCategoryService.GetById(id);
             return postCategoryDTO;

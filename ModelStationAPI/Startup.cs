@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,6 +19,7 @@ using ModelStationAPI.Interfaces;
 using ModelStationAPI.Middleware;
 using ModelStationAPI.Models;
 using ModelStationAPI.Services;
+using ModelStationAPI.Tests;
 using ModelStationAPI.Validation;
 using System;
 using System.Collections.Generic;
@@ -66,6 +68,21 @@ namespace ModelStationAPI
 
             });
         }
+        public void UseDatabase(IServiceCollection services)
+        {
+            var _conectionParams = Configuration;
+
+            string connectionString = "Server=" + _conectionParams.GetSection("ProductionDatabase:Server").Value +
+                @"\" + _conectionParams.GetSection("ProductionDatabase:Service").Value +
+                "; Database=" + _conectionParams.GetSection("ProductionDatabase:Database").Value +
+                "; Trusted_Connection=" + _conectionParams.GetSection("ProductionDatabase:TrustedConnection").Value +
+                ";";
+
+            services.AddDbContext<ModelStationDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -80,7 +97,7 @@ namespace ModelStationAPI
             services.AddControllers();
 
             //DbContext
-            services.AddDbContext<ModelStationDbContext>();
+            UseDatabase(services);
 
             //AutoMapper
             services.AddAutoMapper(this.GetType().Assembly);

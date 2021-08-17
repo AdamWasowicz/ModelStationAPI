@@ -8,14 +8,17 @@ namespace ModelStationAPI.Entities
 {
     public class ModelStationDbContext : DbContext
     {
-        private readonly string _connectionString = @"Server=(localdb)\mssqllocaldb; Database=ModelStation; Trusted_Connection=True";
-  
+        //private readonly string _ = @"Server=(localdb)\mssqllocaldb; Database=ModelStation; Trusted_Connection=True";
 
+        public ModelStationDbContext(DbContextOptions options) : base(options)
+        {
+            
+        }
 
-    //DbSets
-    //Those Dbsets represents tables in database.
-    //EntityFramework will create database by converting C# classes
-    public DbSet<Comment> Comments { get; set; }
+        //DbSets
+        //Those Dbsets represents tables in database.
+        //EntityFramework will create database by converting C# classes
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<User> Users { get; set; }
@@ -113,9 +116,9 @@ namespace ModelStationAPI.Entities
 
         
         //This where I set database that will be used by EntityFramework
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(_connectionString);
+        //}
     }
 }

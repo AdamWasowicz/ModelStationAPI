@@ -91,9 +91,6 @@ namespace ModelStationAPI.Services
                 .Where(p => p.UserId == userId)
                 .ToList();
 
-            if (posts.Count == 0)
-                throw new NotFoundException("Search yelded no result");
-
             var result = _mapper.Map<List<PostDTO>>(posts);
             return result;
         }
@@ -106,9 +103,6 @@ namespace ModelStationAPI.Services
                 .Include(p => p.PostCategory)
                 .Where(p => p.PostCategoryId == categoryId)
                 .ToList();
-
-            if (posts.Count == 0)
-                throw new NotFoundException("Search yelded no result");
 
             var result = _mapper.Map<List<PostDTO>>(posts);
             return result;
@@ -123,9 +117,6 @@ namespace ModelStationAPI.Services
                 .Where(p => p.User.UserName == userName)
                 .ToList();
 
-            if (posts.Count == 0)
-                throw new NotFoundException("Search yelded no result");
-
             var result = _mapper.Map<List<PostDTO>>(posts);
             return result;
         }
@@ -138,9 +129,6 @@ namespace ModelStationAPI.Services
                 .Include(p => p.PostCategory)
                 .Where(p => p.PostCategory.Name == categoryName)
                 .ToList();
-
-            if (posts.Count == 0)
-                throw new NotFoundException("Search yelded no result");
 
             var result = _mapper.Map<List<PostDTO>>(posts);
             return result;

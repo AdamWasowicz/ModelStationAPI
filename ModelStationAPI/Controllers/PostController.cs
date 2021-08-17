@@ -86,7 +86,7 @@ namespace ModelStationAPI.Controllers
             return Ok(postsDTO);
         }
 
-        [HttpGet("userName/{name}")]
+        [HttpGet("user/{name}")]
         public ActionResult<List<PostDTO>> GetPostByUserName([FromRoute] string name)
         {
             var postsDTO = _postService.GetPostsByUserName(name);
@@ -97,7 +97,7 @@ namespace ModelStationAPI.Controllers
             return Ok(postsDTO);
         }
 
-        [HttpGet("postcategoryName/{name}")]
+        [HttpGet("postcategory/{name}")]
         public ActionResult<List<PostDTO>> GetPostByCategoryName([FromRoute] string name)
         {
             var postsDTO = _postService.GetPostsByPostCategoryName(name);

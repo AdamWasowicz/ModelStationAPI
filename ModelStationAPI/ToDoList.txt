@@ -1,5 +1,10 @@
 ﻿Important:
 	-Unit Tests
 
+	-PostCategory Controller
+	-PostCategory Service
+	-PostCategory Service Interface
+
+
 Not Important:
 	-Seeder

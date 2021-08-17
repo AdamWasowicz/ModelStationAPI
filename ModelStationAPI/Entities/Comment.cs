@@ -14,7 +14,7 @@ namespace ModelStationAPI.Entities
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }
         public string Text { get; set; }
-        public int? ParentCommentId { get; set; } //Dodać do validatora linjke która sprawdza czy isntnieje komentarz nadrzędny
+        public int? ParentCommentId { get; set; }
         public int Likes { get; set; }
 
 

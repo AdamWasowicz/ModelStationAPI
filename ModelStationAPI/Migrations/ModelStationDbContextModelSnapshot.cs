@@ -89,7 +89,7 @@ namespace ModelStationAPI.Migrations
                     b.Property<int>("Likes")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PostCategoryId")
+                    b.Property<int>("PostCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("PostHash")
@@ -242,7 +242,8 @@ namespace ModelStationAPI.Migrations
                     b.HasOne("ModelStationAPI.Entities.PostCategory", "PostCategory")
                         .WithMany()
                         .HasForeignKey("PostCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("ModelStationAPI.Entities.User", "User")
                         .WithMany("Posts")

@@ -45,14 +45,17 @@ namespace ModelStationAPI.Services
                 .Users
                 .ToList();
 
+            if (users.Count == 0)
+                throw new NotFoundException("There are no Users in database");
+
             var result = _mapper.Map<List<UserDTO>>(users);
             return result;
         }
 
         public int Create(CreateUserDTO dto)
         {
-            var user = _mapper.Map<User>(dto);
-
+            User user = _mapper.Map<User>(dto);
+                
             user.IsActive = true;
             user.IsBanned = false;
             user.RegisterDate = DateTime.Now;

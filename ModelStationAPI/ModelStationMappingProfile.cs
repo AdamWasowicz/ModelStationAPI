@@ -13,6 +13,7 @@ namespace ModelStationAPI
         //Mapping Profiles
         public ModelStationMappingProfile()
         {
+            //Post
             //Post to PostDTO
             CreateMap<Post, PostDTO>()
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.User.Id))
@@ -23,6 +24,7 @@ namespace ModelStationAPI
             CreateMap<CreatePostDTO, Post>();
 
 
+            //Comment
             //Comment to CommentDTO
             CreateMap<Comment, CommentDTO>()
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.User.Id))
@@ -32,22 +34,25 @@ namespace ModelStationAPI
             CreateMap<CreateCommentDTO, Comment>();
 
 
+            //User
             //User to UserDTO
             CreateMap<User, UserDTO>();
             //CreateUserDTO to User
             CreateMap<CreateUserDTO, User>();
 
 
+            //PostCategory
             //PostCategory to PostCategoryDTO
             CreateMap<PostCategory, PostCategoryDTO>();
             //CreatePostCategoryDTO to PostCategory
             CreateMap<CreatePostCategoryDTO, PostCategory>();
 
 
-
-        
-
-
+            //LikedPost
+            //LikedPost to LikedPostDTO
+            CreateMap<LikedPost, LikedPostDTO>();
+            //CreateLikedPostDTO to LikedPost
+            CreateMap<CreateLikedPostDTO, LikedPost>();
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿Important:
 	-Unit Tests
-
-	-PostCategory Controller
-	-PostCategory Service
-	-PostCategory Service Interface
-
+	
+	-CreateLikedPostService
+	-CreateLikedPostController
+	-ILikedPostService
 
 Not Important:
 	-Seeder

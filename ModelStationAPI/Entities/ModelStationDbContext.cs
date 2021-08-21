@@ -23,6 +23,7 @@ namespace ModelStationAPI.Entities
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<LikedPost> LikedPosts { get; set; }
 
         
         //ModelBuilder
@@ -110,6 +111,10 @@ namespace ModelStationAPI.Entities
             modelBuilder.Entity<User>()
                 .Property(p => p.IsBanned)
                 .IsRequired();
+
+
+            //LikedPosts
+            //Nothing there
 
 
         }

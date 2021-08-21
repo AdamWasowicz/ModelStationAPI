@@ -24,7 +24,6 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "IsUser")]
         public ActionResult<IEnumerable<UserDTO>> GetAll()
         {
             var usersDTO = _userService.GetAll();

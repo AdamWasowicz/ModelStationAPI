@@ -150,6 +150,8 @@ namespace ModelStationAPI.Services
                 post.Text = dto.Text;
             if (dto.ImageSource.Length != 0)
                 post.ImageSource = dto.ImageSource;
+            if (dto.PostCategoryId != null)
+                post.PostCategoryId = dto.PostCategoryId;
 
             post.LastEditDate = DateTime.Now;
 

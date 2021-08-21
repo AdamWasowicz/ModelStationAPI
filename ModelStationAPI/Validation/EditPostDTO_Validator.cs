@@ -31,6 +31,18 @@ namespace ModelStationAPI.Validation
 
             RuleFor(x => x.Text)
                 .MaximumLength(256);
+
+
+            RuleFor(x => x.PostCategoryId)
+                .Custom((value, context) =>
+                {
+                    var postCategoryExist = dbContext
+                        .PostCategories
+                        .Any(pc => pc.Id == value);
+
+                    if (!postCategoryExist)
+                        context.AddFailure("PostCategory", "NOT FOUND");
+                });
         }
     }
 }

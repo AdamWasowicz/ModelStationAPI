@@ -11,5 +11,6 @@ namespace ModelStationAPI.Models
         public string Title { get; set; }
         public string Text { get; set; }
         public string ImageSource { get; set; }
+        public int? PostCategoryId { get; set; }
     }
 }

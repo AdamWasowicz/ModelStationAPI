@@ -10,6 +10,7 @@ namespace ModelStationAPI.Interfaces
     {
         int Create(CreatePostDTO dto);
         bool Delete(int id);
+        bool Edit(EditPostDTO dto);
         List<PostDTO> GetAll();
         PostDTO GetById(int id);
         List<PostDTO> GetPostsByPostCategoryId(int categoryId);

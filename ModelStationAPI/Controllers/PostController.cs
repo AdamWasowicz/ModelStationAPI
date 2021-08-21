@@ -107,5 +107,20 @@ namespace ModelStationAPI.Controllers
 
             return Ok(postsDTO);
         }
+
+        [HttpPatch]
+        public ActionResult Edit([FromBody] EditPostDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = _postService.Edit(dto);
+
+            if (result)
+                return Ok();
+
+            return NotFound();
+        }
     }
 }

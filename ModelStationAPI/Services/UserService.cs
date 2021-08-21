@@ -104,6 +104,9 @@ namespace ModelStationAPI.Services
             if (dto.Description.Length != 0)
                 user.Description = dto.Description;
 
+            user.LastEditDate = DateTime.Now;
+
+            _dbContext.SaveChanges();
             return true;
         }
     }

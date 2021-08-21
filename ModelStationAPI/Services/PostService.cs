@@ -133,5 +133,28 @@ namespace ModelStationAPI.Services
             var result = _mapper.Map<List<PostDTO>>(posts);
             return result;
         }
+
+        public bool Edit(EditPostDTO dto)
+        {
+            var post = _dbContext
+                .Posts
+                .FirstOrDefault(p => p.Id == dto.Id);
+
+            if (post == null)
+                return false;
+
+            //Change
+            if (dto.Title.Length != 0)
+                post.Title = dto.Title;
+            if (dto.Text.Length != 0)
+                post.Text = dto.Text;
+            if (dto.ImageSource.Length != 0)
+                post.ImageSource = dto.ImageSource;
+
+            post.LastEditDate = DateTime.Now;
+
+            _dbContext.SaveChanges();
+            return true;
+        }
     }
 }

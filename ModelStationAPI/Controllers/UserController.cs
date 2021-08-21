@@ -68,6 +68,10 @@ namespace ModelStationAPI.Controllers
         [HttpPatch]
         public ActionResult Edit([FromBody] EditUserDTO dto)
         {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             bool result = _userService.Edit(dto);
 
             if (result)

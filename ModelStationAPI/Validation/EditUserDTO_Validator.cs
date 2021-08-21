@@ -12,8 +12,20 @@ namespace ModelStationAPI.Validation
     {
         private readonly List<char> Genders = new List<char> { 'F', 'M' };
 
-        public EditUserDTO_Validator()
+        public EditUserDTO_Validator(ModelStationDbContext dbContext)
         {
+            RuleFor(u => u.Id)
+                .NotEmpty()
+                .Custom((value, context) =>
+                {
+                    var userExist = dbContext
+                        .Users
+                        .Any(u => u.Id == value);
+
+                    if (!userExist)
+                        context.AddFailure("User", "NOT FOUND");
+                });
+
             RuleFor(u => u.Name)
                 .MaximumLength(64);
 
@@ -28,7 +40,7 @@ namespace ModelStationAPI.Validation
                     var validGender = Genders.Contains(value);
 
                     if (!validGender)
-                        context.AddFailure("Gendr", "NOT VALID");
+                        context.AddFailure("Gender", "INVALID");
                 });
 
 

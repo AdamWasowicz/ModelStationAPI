@@ -84,6 +84,10 @@ namespace ModelStationAPI.Services
             return true;
         }
 
-
+        public bool Edit(EditUserDTO dto)
+        {
+            //TODO
+            return true;
+        }
     }
 }

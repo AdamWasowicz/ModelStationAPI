@@ -64,5 +64,16 @@ namespace ModelStationAPI.Controllers
 
             return NotFound();
         }
+
+        [HttpPatch]
+        public ActionResult Edit([FromBody] EditUserDTO dto)
+        {
+            bool result = _userService.Edit(dto);
+
+            if (result)
+                return Ok();
+
+            return NotFound();
+        }
     }
 }

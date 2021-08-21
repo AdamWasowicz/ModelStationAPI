@@ -9,5 +9,6 @@ namespace ModelStationAPI.Interfaces
         List<UserDTO> GetAll();
         UserDTO GetById(int id);
         bool Delete(int id);
+        bool Edit(EditUserDTO dto);
     }
 }

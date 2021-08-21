@@ -26,6 +26,7 @@ namespace ModelStationAPI.Validation
                         context.AddFailure("User", "NOT FOUND");
                 });
 
+
             RuleFor(u => u.Name)
                 .MaximumLength(64);
 
@@ -37,7 +38,7 @@ namespace ModelStationAPI.Validation
             RuleFor(u => u.Gender)
                 .Custom((value, context) =>
                 {
-                    var validGender = Genders.Contains(value);
+                    var validGender = Genders.Contains(Convert.ToChar(value));
 
                     if (!validGender)
                         context.AddFailure("Gender", "INVALID");

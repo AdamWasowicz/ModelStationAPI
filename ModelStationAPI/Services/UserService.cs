@@ -86,7 +86,24 @@ namespace ModelStationAPI.Services
 
         public bool Edit(EditUserDTO dto)
         {
-            //TODO
+            var user = _dbContext
+                .Users
+                .FirstOrDefault(u => u.Id == dto.Id);
+
+            if (user == null)
+                return false;
+
+
+            //Change
+            if (dto.Name.Length != 0)
+                user.Name = dto.Name;
+            if (dto.Surname.Length != 0)
+                user.Surname = dto.Surname;
+            if (dto.Gender.ToString().Length == 1)
+                user.Gender = dto.Gender;
+            if (dto.Description.Length != 0)
+                user.Description = dto.Description;
+
             return true;
         }
     }

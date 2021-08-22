@@ -10,6 +10,7 @@ namespace ModelStationAPI.Interfaces
     {
         int Create(CreateCommentDTO dto);
         bool Delete(int id);
+        bool Edit(EditCommentDTO dto);
         List<CommentDTO> GetAll();
         CommentDTO GetById(int id);
         List<CommentDTO> GetCommentsByPostId(int postId);

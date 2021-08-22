@@ -87,5 +87,20 @@ namespace ModelStationAPI.Controllers
 
             return NotFound();
         }
+
+        [HttpPatch]
+        public ActionResult EditComment([FromBody] EditCommentDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            bool result = _commentService.Edit(dto);
+
+            if (result)
+                return Ok();
+
+            return NotFound();
+        }
     }
 }

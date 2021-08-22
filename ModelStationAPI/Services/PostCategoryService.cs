@@ -87,5 +87,24 @@ namespace ModelStationAPI.Services
 
             _dbContext.SaveChanges();
         }
+
+        public bool Edit(EditPostCategoryDTO dto)
+        {
+            var postCategory = _dbContext
+                .PostCategories
+                .FirstOrDefault(pc => pc.Id == dto.Id);
+
+            if (postCategory == null)
+                return false;
+
+            //Changes
+            if (dto.Name.Length > 0)
+                postCategory.Name = dto.Name;
+            if (dto.Description.Length > 0)
+                postCategory.Description = dto.Description;
+
+            _dbContext.SaveChanges();
+            return true;
+        }
     }
 }

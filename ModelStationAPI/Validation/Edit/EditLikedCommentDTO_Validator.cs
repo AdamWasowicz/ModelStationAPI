@@ -10,11 +10,20 @@ namespace ModelStationAPI.Validation
 {
     public class EditLikedCommentDTO_Validator : AbstractValidator<EditLikedCommentDTO>
     {
-        public EditLikedCommentDTO_Validator()
+        public EditLikedCommentDTO_Validator(ModelStationDbContext dbContext)
         {
             RuleFor(x => x.Id)
-                .NotEmpty();
+                .NotEmpty()
+                .Custom((value, context) =>
+                {
+                    var likedCommentExist = dbContext
+                        .LikedComments
+                        .Any(lc => lc.Id == value);
 
+                    if (!likedCommentExist)
+                        context.AddFailure("LikedComment", "NOT FOUND");
+                });
+                
 
             RuleFor(x => x.Value)
                 .NotEmpty()

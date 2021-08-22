@@ -1,6 +1,8 @@
 ﻿Important:
 	-Unit Tests
 	
+	-EditComment service and controler
+
 	-CreateLikedPostService
 	-CreateLikedPostController
 	-ILikedPostService

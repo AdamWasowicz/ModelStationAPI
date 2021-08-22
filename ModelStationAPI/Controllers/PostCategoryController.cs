@@ -58,5 +58,20 @@ namespace ModelStationAPI.Controllers
 
             return NotFound();
         }
+
+        [HttpPatch]
+        public ActionResult EditPostCategory([FromBody] EditPostCategoryDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            bool result = _postCategoryService.Edit(dto);
+
+            if (result)
+                return Ok();
+
+            return NotFound();
+        }
     }
 }

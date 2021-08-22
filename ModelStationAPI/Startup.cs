@@ -120,12 +120,19 @@ namespace ModelStationAPI
 
             //FluentValidation
             services.AddFluentValidation();
+            //Create
+            services.AddScoped<IValidator<CreatePostDTO>, CreatePostDTO_Validator>();
             services.AddScoped<IValidator<CreateUserDTO>, CreateUserDTO_Validator>();
             services.AddScoped<IValidator<CreateCommentDTO>, CreateCommentDTO_Validator>();
             services.AddScoped<IValidator<CreatePostCategoryDTO>, CreatePostCategoryDTO_Validator>();
             services.AddScoped<IValidator<CreateLikedPostDTO>, CreateLikedPostDTO_Validator>();
+            //Edit
             services.AddScoped<IValidator<EditPostDTO>, EditPostDTO_Validator>();
-            services.AddScoped<IValidator<CreatePostDTO>, CreatePostDTO_Validator>();
+            services.AddScoped<IValidator<EditUserDTO>, EditUserDTO_Validator>();
+            services.AddScoped<IValidator<EditLikedPostDTO>, EditLikedPostDTO_Validator>();
+            services.AddScoped<IValidator<EditLikedCommentDTO>, EditLikedCommentDTO_Validator>();
+            
+            
 
             //Swagger
             services.AddSwaggerGen(c =>

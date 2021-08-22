@@ -24,6 +24,7 @@ namespace ModelStationAPI.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<LikedPost> LikedPosts { get; set; }
+        public DbSet<LikedComment> LikedComments { get; set; }
 
         
         //ModelBuilder
@@ -117,6 +118,8 @@ namespace ModelStationAPI.Entities
             //Nothing there
 
 
+            //LikedComment
+            //Nothing there
         }
 
         

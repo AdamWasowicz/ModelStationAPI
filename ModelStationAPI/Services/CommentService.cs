@@ -80,6 +80,24 @@ namespace ModelStationAPI.Services
 
             return true;
         }
+        
+        public bool Edit(EditCommentDTO dto)
+        {
+            var comment = _dbContext
+                .Comments
+                .FirstOrDefault(c => c.Id == dto.Id);
+
+            if (comment == null)
+                return false;
+
+            //Change
+            comment.Text = dto.Text;
+
+            comment.LastEditDate = DateTime.Now;
+
+            _dbContext.SaveChanges();
+            return true;
+        }
 
         public List<CommentDTO> GetCommentsByPostId(int postId)
         {

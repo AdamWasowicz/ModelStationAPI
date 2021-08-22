@@ -131,6 +131,7 @@ namespace ModelStationAPI
             services.AddScoped<IValidator<EditUserDTO>, EditUserDTO_Validator>();
             services.AddScoped<IValidator<EditLikedPostDTO>, EditLikedPostDTO_Validator>();
             services.AddScoped<IValidator<EditLikedCommentDTO>, EditLikedCommentDTO_Validator>();
+            services.AddScoped<IValidator<EditCommentDTO>, EditCommentDTO_Validator>();
             
             
 

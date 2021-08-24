@@ -22,10 +22,19 @@ namespace ModelStationAPI.Entities
         public string? ImageSource { get; set; }
         public string PasswordHash { get; set; }
 
+        //ImageSource
+        public int FileId { get; set; }
+        public virtual File File { get; set; }
+
         public int RoleId { get; set; }
         public virtual Role Role { get; set;}
 
         public virtual List<Post> Posts { get; set; }
         public virtual List<Comment> Comments { get; set; }
+
+        //NEW
+        public virtual List<LikedPost> LikedPosts { get; set; }
+        public virtual List<LikedComment> LikedComments { get; set; }
+        public virtual List<File> Files { get; set; }
     }
 }

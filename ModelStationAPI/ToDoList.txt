@@ -1,11 +1,8 @@
 ﻿Important:
-	-Unit Tests
-	
-	-EditComment service and controler
+	-Change the method of file storage
 
-	-CreateLikedPostService
-	-CreateLikedPostController
-	-ILikedPostService
+	-LikedComment,LikedPost and File
+	-Do the magic thing Adam
 
 Not Important:
 	-Seeder

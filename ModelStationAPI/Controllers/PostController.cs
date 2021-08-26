@@ -86,10 +86,10 @@ namespace ModelStationAPI.Controllers
             return Ok(postsDTO);
         }
 
-        [HttpGet("user/{name}")]
-        public ActionResult<List<PostDTO>> GetPostByUserName([FromRoute] string name)
+        [HttpGet("user/{username}")]
+        public ActionResult<List<PostDTO>> GetPostByUserName([FromRoute] string username)
         {
-            var postsDTO = _postService.GetPostsByUserName(name);
+            var postsDTO = _postService.GetPostsByUserName(username);
 
             if (postsDTO == null)
                 return NotFound();

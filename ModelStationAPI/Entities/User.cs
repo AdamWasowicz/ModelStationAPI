@@ -33,8 +33,8 @@ namespace ModelStationAPI.Entities
         public virtual List<Comment> Comments { get; set; }
 
         //NEW
-        public virtual List<LikedPost> LikedPosts { get; set; }
-        public virtual List<LikedComment> LikedComments { get; set; }
+        public virtual List<LikedComment> LikedPosts { get; set; }
+        public virtual List<LikedPost> LikedComments { get; set; }
         public virtual List<File> Files { get; set; }
     }
 }

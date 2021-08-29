@@ -1,7 +1,6 @@
 ﻿Important:
-	-Change the method of file storage
 
-	-LikedComment,LikedPost and File
+	-LikedComment and FileStorage
 	-Do the magic thing Adam
 
 Not Important:

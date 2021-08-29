@@ -25,6 +25,7 @@ namespace ModelStationAPI.Entities
         public DbSet<Role> Roles { get; set; }
         public DbSet<LikedPost> LikedPosts { get; set; }
         public DbSet<LikedComment> LikedComments { get; set; }
+        public DbSet<FileStorage> FilesStorage { get; set; }
 
         
         //ModelBuilder
@@ -119,6 +120,10 @@ namespace ModelStationAPI.Entities
 
 
             //LikedComment
+            //Nothing there
+
+
+            //FileStorage
             //Nothing there
         }
 

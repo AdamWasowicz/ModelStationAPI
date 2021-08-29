@@ -62,6 +62,7 @@ namespace ModelStationAPI
         {
             services.AddAuthorization(options =>
             {
+                //HasAccessLevelAtLEast
                 options.AddPolicy("IsUser", builder => builder.AddRequirements(new HasAccessLevelAtLeast(3)));
                 options.AddPolicy("IsModeator", builder => builder.AddRequirements(new HasAccessLevelAtLeast(6)));
                 options.AddPolicy("IsAdmin", builder => builder.AddRequirements(new HasAccessLevelAtLeast(10)));
@@ -110,6 +111,7 @@ namespace ModelStationAPI
             services.AddScoped<IPostCategoryService, PostCategoryService>();
             services.AddScoped<ILikedPostService, LikedPostService>();
             services.AddScoped<ILikedCommentService, LikedCommentService>();
+            services.AddScoped<IFileService, FileService>();
 
             //AuthorizationHandlers
             services.AddScoped<IAuthorizationHandler, HasAccessLevelAtLeastHandler>();

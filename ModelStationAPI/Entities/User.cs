@@ -19,12 +19,12 @@ namespace ModelStationAPI.Entities
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }
-        public string? ImageSource { get; set; }
+        public string ImageSource { get; set; }
         public string PasswordHash { get; set; }
 
         //ImageSource
-        public int FileId { get; set; }
-        public virtual File File { get; set; }
+        public int? FileStorageId { get; set; }
+        public virtual FileStorage FileStorage { get; set; }
 
         public int RoleId { get; set; }
         public virtual Role Role { get; set;}
@@ -35,6 +35,5 @@ namespace ModelStationAPI.Entities
         //NEW
         public virtual List<LikedComment> LikedPosts { get; set; }
         public virtual List<LikedPost> LikedComments { get; set; }
-        public virtual List<File> Files { get; set; }
     }
 }

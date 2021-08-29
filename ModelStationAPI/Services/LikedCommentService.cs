@@ -100,7 +100,7 @@ namespace ModelStationAPI.Services
             return likedCommentsDTO;
         }
 
-        public List<UserDTO> GetUserByCommentId(int commentId)
+        public List<UserDTO> GetUsersByCommentId(int commentId)
         {
             var likedComments = _dbContext
                 .LikedComments

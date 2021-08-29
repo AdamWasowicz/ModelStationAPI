@@ -13,6 +13,6 @@ namespace ModelStationAPI.Interfaces
         List<LikedCommentDTO> GetAll();
         LikedCommentDTO GetById(int id);
         List<LikedCommentDTO> GetLikedCommentsByUserId(int userId);
-        List<UserDTO> GetUserByCommentId(int commentId);
+        List<UserDTO> GetUsersByCommentId(int commentId);
     }
 }

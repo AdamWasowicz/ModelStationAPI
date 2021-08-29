@@ -57,6 +57,10 @@ namespace ModelStationAPI.Controllers
         [HttpPatch]
         public ActionResult EditLikedPost([FromBody] EditLikedPostDTO dto)
         {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = _likedPostService.Edit(dto);
 
             if (result == true)

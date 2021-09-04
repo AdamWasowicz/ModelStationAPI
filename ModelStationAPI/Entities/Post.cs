@@ -8,7 +8,6 @@ namespace ModelStationAPI.Entities
     public class Post
     {
         public int Id { get; set; }
-        public string PostHash { get; set; }
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }
@@ -26,5 +25,6 @@ namespace ModelStationAPI.Entities
         public virtual PostCategory PostCategory { get; set; }
 
         public virtual List<Comment> Comments { get; set; }
+        public virtual List<FileStorage> FileStorages { get; set; }
     }
 }

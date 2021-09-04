@@ -1,7 +1,5 @@
 ﻿Important:
-
-	-LikedComment and FileStorage
-	-Do the magic thing Adam
+	-More refractoring
 
 Not Important:
 	-Seeder

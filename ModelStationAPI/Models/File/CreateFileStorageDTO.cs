@@ -11,7 +11,6 @@ namespace ModelStationAPI.Models
         public int UserId { get; set; }
         public int? PostId { get; set; }
         public string ContentType { get; set; }
-        public string UserGivenName { get; set; }
 
         public IFormFile File { get; set; }
     }

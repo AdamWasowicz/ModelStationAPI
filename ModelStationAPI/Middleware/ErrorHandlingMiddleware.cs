@@ -28,6 +28,11 @@ namespace ModelStationAPI.Middleware
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundException.Message);
             }
+            catch (UnauthorizedAccessException exception)
+            {
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsync(exception.Message);
+            }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);

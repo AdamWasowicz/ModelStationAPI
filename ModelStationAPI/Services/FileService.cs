@@ -21,17 +21,19 @@ namespace ModelStationAPI.Services
     public class FileService : IFileService
     {
         private readonly ModelStationDbContext _dbContext;
+        private readonly IMapper _mapper;
         private readonly string fileStoragePath = "Files/FileStorage";
 
-        public FileService(ModelStationDbContext dbContext)
+        public FileService(ModelStationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public string HashName(CreateFileStorageDTO dto)
+        private string HashName(CreateFileStorageDTO dto)
         {
-            string toBeHashedString = dto.UserId + dto.UserGivenName + DateTime.Now.ToString();
-            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            string toBeHashedString = dto.UserId + dto.File.FileName + DateTime.Now.ToString();
+            using (var sha = new SHA256Managed())
             {
                 byte[] textData = System.Text.Encoding.UTF8.GetBytes(toBeHashedString);
                 byte[] hash = sha.ComputeHash(textData);
@@ -74,7 +76,7 @@ namespace ModelStationAPI.Services
                     ContentType = dto.ContentType,
                     PostId = (dto.PostId != 0 && dto.PostId != null) ? dto.PostId : 0,
                     FileType = file.ContentType,
-                    UserGivenName = dto.UserGivenName,
+                    UserGivenName = dto.File.FileName,
                     StorageName = fileName,
                     FullName = fileName + "." + file.ContentType,
                     FullPath = fullPath,
@@ -121,12 +123,12 @@ namespace ModelStationAPI.Services
             return true;
         }
 
-        public Byte[] GetById(int id)
+        public Byte[] GetFileByFileStorageId(int fileStorageId)
         {
             var file = _dbContext
                 .FilesStorage
-                .Where(fs => fs.Id == id)
-                .FirstOrDefault();
+                    .Where(fs => fs.Id == fileStorageId)
+                        .FirstOrDefault();
 
             if (!File.Exists(file.FullPath))
                 throw new NotFoundException("There is no file with that Id");
@@ -135,7 +137,32 @@ namespace ModelStationAPI.Services
             return fileContent;
         }
 
-        public List<Byte[]> GetFilesByPostId(int postId)
+        public Byte[] GetFileByByFileStorageName(string storageName)
+        {
+            var file = _dbContext
+                .FilesStorage
+                    .Where(fs => fs.StorageName == storageName)
+                        .FirstOrDefault();
+
+            if (!File.Exists(file.FullPath))
+                throw new NotFoundException("There is no file with that Id");
+
+            var fileContent = File.ReadAllBytes(file.FullPath);
+            return fileContent;
+        }
+
+        public FileStorageDTO GetById(int id)
+        {
+            var file = _dbContext
+                .FilesStorage
+                    .Where(fs => fs.Id == id)
+                        .FirstOrDefault();
+
+            var fileDTO = _mapper.Map<FileStorageDTO>(file);
+            return fileDTO;
+        }
+
+        public List<FileStorageDTO> GetFilesByPostId(int postId)
         {
             var postExist = _dbContext
                 .Posts
@@ -148,18 +175,15 @@ namespace ModelStationAPI.Services
 
             var files = _dbContext
                 .FilesStorage
-                .Where(ls => ls.ContentType == "POST")
-                .Where(ls => ls.PostId == postId)
-                .ToList();
+                    .Where(ls => ls.ContentType == "POST")
+                    .Where(ls => ls.PostId == postId)
+                        .ToList();
 
-            List<Byte[]> imageList = new List<byte[]>();
-            foreach (var file in files)
-                imageList.Add(GetById(Convert.ToInt32(file.PostId)));
-
-            return imageList;
+            var filesDTO = _mapper.Map<List<FileStorageDTO>>(files);
+            return filesDTO;
         }
 
-        public Byte[] GetByUserImage(int userId)
+        public FileStorageDTO GetUserImage(int userId)
         {
             var fileStorage = _dbContext
                 .FilesStorage
@@ -170,7 +194,7 @@ namespace ModelStationAPI.Services
             if (fileStorage == null)
                 throw new NotFoundException("This user does not have profile photo");
 
-            Byte[] retFile = GetById(fileStorage.Id);
+            var retFile = GetById(fileStorage.Id);
             return retFile;
         }
 

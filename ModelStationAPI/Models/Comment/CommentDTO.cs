@@ -10,10 +10,11 @@ namespace ModelStationAPI.Models
         public int Id { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsBanned { get; set; }
+        //public bool IsActive { get; set; }
+        //public bool IsBanned { get; set; }
         public string Text { get; set; }
         public int? ParentCommentId { get; set; }
+        public int Likes { get; set; }
 
 
         public int UserId { get; set; }

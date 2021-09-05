@@ -114,7 +114,7 @@ namespace ModelStationAPI.Services
             var post = _dbContext
                 .Posts
                 .Where(p => p.Id == id)
-                .FirstOrDefault();
+                    .FirstOrDefault();
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that Id");
@@ -130,11 +130,13 @@ namespace ModelStationAPI.Services
             if (post.UserId != userId)
                 throw new NoPermissionException("You can't delete someone else's post");
 
+
+
             //HERE DELETE FILES OF THAT POST
             var files = _dbContext
                 .FilesStorage
                     .Where(fs => fs.ContentType == "POST")
-                    .Where(fs => fs.Id == id)
+                    .Where(fs => fs.PostId == id)
                         .ToList();
 
             foreach (var file in files)
@@ -147,8 +149,8 @@ namespace ModelStationAPI.Services
                     throw new Exception("File could not be deleted");
 
                 _dbContext.FilesStorage.Remove(file);
+                _dbContext.SaveChanges();
             }
-
 
             _dbContext.Posts.Remove(post);
             _dbContext.SaveChanges();

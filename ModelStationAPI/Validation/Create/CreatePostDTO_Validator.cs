@@ -21,7 +21,7 @@ namespace ModelStationAPI.Validation
                 .MaximumLength(256);
 
 
-            RuleFor(x => x.CategoryId)
+            RuleFor(x => x.PostCategoryId)
                 .NotEmpty()
                 .Custom((value, context) =>
                 {

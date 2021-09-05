@@ -14,6 +14,6 @@ namespace ModelStationAPI.Models
         //Files
         public List<IFormFile> Files { get; set; }
 
-        public int? CategoryId { get; set; }
+        public int? PostCategoryId { get; set; }
     }
 }

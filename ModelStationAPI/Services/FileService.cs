@@ -44,12 +44,13 @@ namespace ModelStationAPI.Services
         public int Upload(CreateFileStorageDTO dto)
         {
             IFormFile file = dto.File;
+            string extension = file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
 
             if (file != null && file.Length > 0)
             {
                 var rootPath = Directory.GetCurrentDirectory();
                 var fileName = HashName(dto);
-                var fullPath = $"{rootPath}/{fileStoragePath}/{fileName}.{file.ContentType}";
+                var fullPath = $"{rootPath}/{fileStoragePath}/{fileName}.{extension}";
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     file.CopyTo(stream);
@@ -75,10 +76,10 @@ namespace ModelStationAPI.Services
                 {
                     ContentType = dto.ContentType,
                     PostId = (dto.PostId != 0 && dto.PostId != null) ? dto.PostId : 0,
-                    FileType = file.ContentType,
+                    FileType = extension,
                     UserGivenName = dto.File.FileName,
                     StorageName = fileName,
-                    FullName = fileName + "." + file.ContentType,
+                    FullName = fileName + "." + extension,
                     FullPath = fullPath,
                     UploadDate = DateTime.Now,
                     UserId = dto.UserId

@@ -24,7 +24,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "IsAdmin")]
+        //[Authorize(Policy = "IsAdmin")]
         public ActionResult<List<PostDTO>> GetAll()
         {
             var postsDTO = _postService.GetAll();
@@ -44,7 +44,7 @@ namespace ModelStationAPI.Controllers
 
         [HttpPost]
         [Authorize(Policy = "IsUser")]
-        public ActionResult CreatePost([FromBody] CreatePostDTO dto)
+        public ActionResult CreatePost([FromForm] CreatePostDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
@@ -56,7 +56,7 @@ namespace ModelStationAPI.Controllers
             return Created(createdId.ToString(), null);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Policy = "IsUser")]
         public ActionResult DeletePost([FromRoute] int id)
         {

@@ -8,10 +8,10 @@ namespace ModelStationAPI.Interfaces
     {
         bool Delete(int id, int userId);
         FileStorageDTO GetById(int id);
+        byte[] GetFileByByFileStorageName(string storageName);
+        byte[] GetFileByFileStorageId(int fileStorageId);
         List<FileStorageDTO> GetFilesByPostId(int postId);
         FileStorageDTO GetUserImage(int userId);
         int Upload(CreateFileStorageDTO dto);
-        Byte[] GetFileByFileStorageId(int fileStorageId);
-        Byte[] GetFileByByFileStorageName(string storageName);
     }
 }

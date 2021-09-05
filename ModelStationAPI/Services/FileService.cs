@@ -19,7 +19,7 @@ using System.Security.Cryptography;
 namespace ModelStationAPI.Services
 {
     public class FileService : IFileService
-    {
+    { 
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly string fileStoragePath = "Files/FileStorage";

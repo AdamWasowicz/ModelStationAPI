@@ -11,6 +11,9 @@ using ModelStationAPI.Interfaces;
 using ModelStationAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using ModelStationAPI.Authorization;
 
 namespace ModelStationAPI.Services
 {
@@ -19,13 +22,19 @@ namespace ModelStationAPI.Services
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
+        private readonly IAuthorizationService _authorizationService;
 
-        public PostService(ModelStationDbContext dbContext, IMapper mapper, IFileService fileService)
+        public PostService(ModelStationDbContext dbContext,
+            IMapper mapper, 
+            IFileService fileService,
+            IAuthorizationService authorizationService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _fileService = fileService;
+            _authorizationService = authorizationService;
         }
+
 
         //Complementary functions
         private void IncludeFiles(PostDTO dto)
@@ -62,15 +71,21 @@ namespace ModelStationAPI.Services
 
 
         //Functions
-        public int Create(CreatePostDTO dto, int userId)
+        public int Create(CreatePostDTO dto, ClaimsPrincipal userClaims)
         {
             var post = _mapper.Map<Post>(dto);
-            post.UserId = userId;
+            post.UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value); ;
             post.IsActive = true;
             post.IsBanned = false;
             post.CreationDate = DateTime.Now;
             post.LastEditDate = post.CreationDate;
             post.Likes = 0;
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Create));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
 
             //Post
             _dbContext.Posts.Add(post);
@@ -81,7 +96,7 @@ namespace ModelStationAPI.Services
             {
                 var createFileDto = new CreateFileStorageDTO()
                 {
-                    UserId = userId,
+                    UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value),
                     PostId = post.Id,
                     ContentType = "POST",
                     File = file
@@ -92,9 +107,10 @@ namespace ModelStationAPI.Services
 
             return post.Id;
         }
-
-        public bool Delete(int id, int userId)
+        public bool Delete(int id, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var post = _dbContext
                 .Posts
                 .Where(p => p.Id == id)
@@ -102,6 +118,14 @@ namespace ModelStationAPI.Services
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that Id");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Delete));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
 
             if (post.UserId != userId)
                 throw new NoPermissionException("You can't delete someone else's post");
@@ -131,9 +155,10 @@ namespace ModelStationAPI.Services
 
             return true;
         }
-
-        public bool Edit(EditPostDTO dto, int userId)
+        public bool Edit(EditPostDTO dto, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var post = _dbContext
                 .Posts
                 .Where(p => p.Id == dto.Id)
@@ -141,6 +166,14 @@ namespace ModelStationAPI.Services
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that Id");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Update));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
 
             if (post.UserId != userId)
                 throw new NoPermissionException("You can't delete someone else's post");
@@ -163,8 +196,10 @@ namespace ModelStationAPI.Services
         }
 
 
-        public bool UnBanPostByPostId(int postId)
+        public bool UnBanPostByPostId(int postId, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var post = _dbContext
                 .Posts
                     .Where(p => p.Id == postId)
@@ -172,14 +207,24 @@ namespace ModelStationAPI.Services
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that PostId");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Ban));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
 
             post.IsBanned = false;
             _dbContext.SaveChanges();
 
             return true;
         }
-        public bool BanPostByPostId(int postId)
+        public bool BanPostByPostId(int postId, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var post = _dbContext
                 .Posts
                     .Where(p => p.Id == postId)
@@ -187,35 +232,82 @@ namespace ModelStationAPI.Services
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that PostId");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Ban));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
 
             post.IsBanned = true;
             _dbContext.SaveChanges();
 
             return true;
         }
-        public bool BanPostsByUserId(int userId)
+        public bool BanPostsByUserId(int id, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var user = _dbContext
                 .Users
-                    .Where(u => u.Id == userId);
+                    .Where(u => u.Id == id);
 
             if (user == null)
                 throw new NotFoundException("There is no User with that Id");
 
             var posts = _dbContext
                 .Posts
-                    .Where(p => p.UserId == userId)
+                    .Where(p => p.UserId == id)
                         .ToList();
 
             foreach (var post in posts)
-                post.IsBanned = true;
+            {
+                var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                    new ResourceOperationRequirementPost(ResourceOperation.Ban));
+
+                if (authorizationResult.IsCompletedSuccessfully)
+                    post.IsBanned = true;
+            }
 
             _dbContext.SaveChanges();
 
             return true;
         }
-        public bool ChangeActiveStateByPostId(int postId)
+        public bool UnBanPostsByUserId(int id, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
+            var user = _dbContext
+                .Users
+                    .Where(u => u.Id == id);
+
+            if (user == null)
+                throw new NotFoundException("There is no User with that Id");
+
+            var posts = _dbContext
+                .Posts
+                    .Where(p => p.UserId == id)
+                        .ToList();
+
+            foreach (var post in posts)
+            {
+                var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                    new ResourceOperationRequirementPost(ResourceOperation.Ban));
+
+                if (authorizationResult.IsCompletedSuccessfully)
+                    post.IsBanned = false;
+            }
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+        public bool ChangeActiveStateByPostId(int postId, ClaimsPrincipal userClaims)
+        {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var post = _dbContext
                 .Posts
                     .Where(p => p.Id == postId)
@@ -223,6 +315,14 @@ namespace ModelStationAPI.Services
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that PostId");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.ChangeActivity));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
 
             post.IsActive = !post.IsActive;
             _dbContext.SaveChanges();
@@ -264,7 +364,6 @@ namespace ModelStationAPI.Services
 
             return postsDTO;
         }
-
         public PostDTO GetById(int id)
         {
             var post = _dbContext
@@ -326,7 +425,6 @@ namespace ModelStationAPI.Services
 
             return postsDTO;
         }
-
         public List<PostDTO> GetPostsByPostCategoryName(string categoryName)
         {
             //Check if postCategpry exists
@@ -370,7 +468,6 @@ namespace ModelStationAPI.Services
 
             return postsDTO;
         }
-
         public List<PostDTO> GetPostsByUserId(int userId)
         {
             var user = _dbContext
@@ -412,7 +509,6 @@ namespace ModelStationAPI.Services
 
             return postsDTO;
         }
-
         public List<PostDTO> GetPostsByUserName(string userName)
         {
             var user = _dbContext

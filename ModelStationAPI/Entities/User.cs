@@ -19,11 +19,11 @@ namespace ModelStationAPI.Entities
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }
-        public string ImageSource { get; set; }
         public string PasswordHash { get; set; }
 
         //ImageSource
         public int? FileStorageId { get; set; }
+
 
         public int RoleId { get; set; }
         public virtual Role Role { get; set;}

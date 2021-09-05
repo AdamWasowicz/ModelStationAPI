@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ModelStationAPI.Entities;
 using ModelStationAPI.Exceptions;
@@ -29,7 +30,11 @@ namespace ModelStationAPI.Services
 
         public string GenerateJwt(LoginDTO dto)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Email == dto.Email);
+            var user = _dbContext
+                .Users
+                .Include(u => u.Role)
+                    .Where(u => u.Email == dto.Email)
+                        .FirstOrDefault();
 
             if (user is null)
                 throw new BadRequestException("Invalid username or password");
@@ -38,13 +43,17 @@ namespace ModelStationAPI.Services
             if (result == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid username or password");
 
+            if (user.IsBanned == true)
+                throw new UserBannedException("This user is banned");
+
             var test = user;
 
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim("UserId", user.Id.ToString()),
                 new Claim("UserName", user.UserName.ToString()),
-                new Claim("Role", user.RoleId.ToString())
+                new Claim("RoleId", user.RoleId.ToString()),
+                new Claim("AccessLevel", user.Role.AccessLevel.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

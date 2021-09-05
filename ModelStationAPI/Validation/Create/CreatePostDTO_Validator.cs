@@ -21,19 +21,6 @@ namespace ModelStationAPI.Validation
                 .MaximumLength(256);
 
 
-            RuleFor(x => x.UserId)
-                .NotEmpty()
-                .Custom((value, context) =>
-                {
-                    var userExist = dbContext
-                        .Users
-                        .Any(u => u.Id == value);
-
-                    if (!userExist)
-                        context.AddFailure("User", "NOT FOUND");
-                });
-
-
             RuleFor(x => x.CategoryId)
                 .NotEmpty()
                 .Custom((value, context) =>

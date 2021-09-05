@@ -25,6 +25,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult Create([FromBody] CreateLikedCommentDTO dto)
         {
             //Check if model is valid
@@ -36,6 +37,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPatch]
+        [Authorize]
         public ActionResult Edit([FromBody] EditLikedCommentDTO dto)
         {
             //Check if model is valid
@@ -50,7 +52,16 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
+        //To be added
+        [HttpDelete("{id}")]
+        [Authorize]
+        public ActionResult Delete([FromBody] int id)
+        {
+            return Ok();
+        }
+
         [HttpGet]
+        [Authorize(Policy = "IsAdmin")]
         public ActionResult<List<LikedCommentDTO>> GetAll()
         {
             var result = _likedCommentService.GetAll();

@@ -24,6 +24,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "IsAdmin")]
         public ActionResult<List<PostDTO>> GetAll()
         {
             var postsDTO = _postService.GetAll();
@@ -42,21 +43,25 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "IsUser")]
         public ActionResult CreatePost([FromBody] CreatePostDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            int createdId = _postService.Create(dto);
+            int userId = Convert.ToInt32(User.FindFirst(c => c.Type == "UserId").Value);
+            int createdId = _postService.Create(dto, User);
 
             return Created(createdId.ToString(), null);
         }
 
         [HttpDelete]
+        [Authorize(Policy = "IsUser")]
         public ActionResult DeletePost([FromRoute] int id)
         {
-            bool isDeleted = _postService.Delete(id);
+            int userId = Convert.ToInt32(User.FindFirst(c => c.Type == "UserId").Value);
+            bool isDeleted = _postService.Delete(id, User);
 
             if (isDeleted)
                 return NoContent();
@@ -109,18 +114,84 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "IsUser")]
         public ActionResult Edit([FromBody] EditPostDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = _postService.Edit(dto);
+            int userId = Convert.ToInt32(User.FindFirst(c => c.Type == "UserId").Value);
+            var result = _postService.Edit(dto, User);
 
             if (result)
                 return Ok();
 
             return NotFound();
+        }
+
+
+
+        //Moderation
+        //PUT
+        [HttpPut("unban/postid/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult UnBanPostByPostId([FromRoute] int id)
+        {
+            var result = _postService.UnBanPostByPostId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPut("ban/postid/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult BanPostByPostId([FromRoute] int id)
+        {
+            var result = _postService.BanPostByPostId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPut("ban/userid/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult BanPostByUserId([FromRoute] int id)
+        {
+            var result = _postService.BanPostsByUserId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPut("unban/userid/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult UnBanPostByUserId([FromRoute] int id)
+        {
+            var result = _postService.UnBanPostsByUserId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPut("changeactivity/userid/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult ChangeActiveStateByPostId([FromRoute] int id)
+        {
+            var result = _postService.ChangeActiveStateByPostId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
         }
     }
 }

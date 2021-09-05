@@ -2,24 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ModelStationAPI.Interfaces
 {
     public interface IPostService
     {
-        int Create(CreatePostDTO dto, int userId);
-        bool Delete(int id, int userId);
-        bool Edit(EditPostDTO dto, int userId);
+        int Create(CreatePostDTO dto, ClaimsPrincipal userClaims);
+        bool Delete(int id, ClaimsPrincipal userClaims);
+        bool Edit(EditPostDTO dto, ClaimsPrincipal userClaims);
+
 
         List<PostDTO> GetAll();
         PostDTO GetById(int id);
 
-        //To be implemented
-        bool UnBanPostByPostId(int postId);
-        bool BanPostByPostId(int postId);
-        bool BanPostsByUserId(int userId);
-        bool ChangeActiveStateByPostId(int postId);
+
+        bool UnBanPostByPostId(int postId, ClaimsPrincipal userClaims);
+        bool BanPostByPostId(int postId, ClaimsPrincipal userClaims);
+        bool BanPostsByUserId(int id, ClaimsPrincipal userClaims);
+        bool UnBanPostsByUserId(int id, ClaimsPrincipal userClaims);
+        bool ChangeActiveStateByPostId(int postId, ClaimsPrincipal userClaims);
 
 
         List<PostDTO> GetPostsByPostCategoryId(int categoryId);

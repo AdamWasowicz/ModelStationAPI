@@ -35,6 +35,7 @@ namespace ModelStationAPI
             Configuration = configuration;
         }
 
+
         public IConfiguration Configuration { get; }
         public void AddAuthentication(IServiceCollection services)
         {
@@ -66,7 +67,6 @@ namespace ModelStationAPI
                 options.AddPolicy("IsUser", builder => builder.AddRequirements(new HasAccessLevelAtLeast(3)));
                 options.AddPolicy("IsModeator", builder => builder.AddRequirements(new HasAccessLevelAtLeast(6)));
                 options.AddPolicy("IsAdmin", builder => builder.AddRequirements(new HasAccessLevelAtLeast(10)));
-
             });
         }
         public void UseDatabase(IServiceCollection services)
@@ -85,15 +85,21 @@ namespace ModelStationAPI
             });
         }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             //Authentication
             AddAuthentication(services);
 
-            //Authentication
+
+            //Authorization
             AddAuthorizationPolicy(services);
-            
+            //AuthorizationHandlers
+            services.AddScoped<IAuthorizationHandler, HasAccessLevelAtLeastHandler>();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementPostHandler>();
+
+
             //Controllers
             services.AddControllers();
 
@@ -113,9 +119,7 @@ namespace ModelStationAPI
             services.AddScoped<ILikedCommentService, LikedCommentService>();
             services.AddScoped<IFileService, FileService>();
 
-            //AuthorizationHandlers
-            services.AddScoped<IAuthorizationHandler, HasAccessLevelAtLeastHandler>();
-
+            
             //Middleware
             services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -137,7 +141,6 @@ namespace ModelStationAPI
             services.AddScoped<IValidator<EditLikedCommentDTO>, EditLikedCommentDTO_Validator>();
             services.AddScoped<IValidator<EditCommentDTO>, EditCommentDTO_Validator>();
             services.AddScoped<IValidator<EditPostCategoryDTO>, EditPostCategoryDTO_Validator>();
-            
             
 
             //Swagger

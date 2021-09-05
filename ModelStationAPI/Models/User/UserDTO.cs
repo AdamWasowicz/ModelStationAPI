@@ -16,6 +16,6 @@ namespace ModelStationAPI.Models
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }
-        public string? ImageSource { get; set; }
+        public int? FileStorageId { get; set; }
     }
 }

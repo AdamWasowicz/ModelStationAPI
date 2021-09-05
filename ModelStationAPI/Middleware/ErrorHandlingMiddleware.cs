@@ -23,13 +23,38 @@ namespace ModelStationAPI.Middleware
             {
                 await next.Invoke(context);
             }
+            catch (BadRequestException exception)
+            {
+                _logger.LogError(exception, exception.Message);
+
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync(exception.Message);
+            }
+            catch (NoPermissionException exception)
+            {
+                _logger.LogError(exception, exception.Message);
+
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(exception.Message);
+            }
             catch (NotFoundException notFoundException)
             {
+                _logger.LogError(notFoundException, notFoundException.Message);
+
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundException.Message);
             }
+            catch (UserBannedException exception)
+            {
+                _logger.LogError(exception, exception.Message);
+
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(exception.Message);
+            }
             catch (UnauthorizedAccessException exception)
             {
+                _logger.LogError(exception, exception.Message);
+
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync(exception.Message);
             }

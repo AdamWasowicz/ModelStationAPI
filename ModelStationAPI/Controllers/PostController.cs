@@ -60,7 +60,6 @@ namespace ModelStationAPI.Controllers
         [Authorize(Policy = "IsUser")]
         public ActionResult DeletePost([FromRoute] int id)
         {
-            int userId = Convert.ToInt32(User.FindFirst(c => c.Type == "UserId").Value);
             bool isDeleted = _postService.Delete(id, User);
 
             if (isDeleted)

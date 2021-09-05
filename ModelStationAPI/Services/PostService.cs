@@ -102,7 +102,7 @@ namespace ModelStationAPI.Services
                     File = file
                 };
 
-                _fileService.Upload(createFileDto);
+                _fileService.Upload(createFileDto, userClaims);
             }
 
             return post.Id;

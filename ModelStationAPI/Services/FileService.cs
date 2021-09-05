@@ -41,8 +41,9 @@ namespace ModelStationAPI.Services
             }
         }
 
-        public int Upload(CreateFileStorageDTO dto)
+        public int Upload(CreateFileStorageDTO dto, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
             IFormFile file = dto.File;
             string extension = file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
 
@@ -60,8 +61,8 @@ namespace ModelStationAPI.Services
                 //User
                 var user = _dbContext
                     .Users
-                    .Where(u => u.Id == dto.UserId)
-                    .FirstOrDefault();
+                        .Where(u => u.Id == dto.UserId)
+                            .FirstOrDefault();
 
                 if (user == null)
                     throw new NotFoundException("There is no User with that Id");
@@ -82,7 +83,7 @@ namespace ModelStationAPI.Services
                     FullName = fileName + "." + extension,
                     FullPath = fullPath,
                     UploadDate = DateTime.Now,
-                    UserId = dto.UserId
+                    UserId = userId
                 };
 
 
@@ -99,8 +100,10 @@ namespace ModelStationAPI.Services
                 throw new BadRequestException("There is something wrong with the file");
         }
 
-        public bool Delete(int id, int userId)
+        public bool Delete(int id, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var fileStorage = _dbContext
                 .FilesStorage
                 .Where(fs => fs.Id == id)
@@ -124,7 +127,7 @@ namespace ModelStationAPI.Services
             return true;
         }
 
-        public Byte[] GetFileByFileStorageId(int fileStorageId)
+        public Tuple<Byte[], string> GetFileByFileStorageId(int fileStorageId)
         {
             var file = _dbContext
                 .FilesStorage
@@ -134,11 +137,14 @@ namespace ModelStationAPI.Services
             if (!File.Exists(file.FullPath))
                 throw new NotFoundException("There is no file with that Id");
 
+            var returnString = file.StorageName + "." + file.FileType;
             var fileContent = File.ReadAllBytes(file.FullPath);
-            return fileContent;
+            var retTuple = Tuple.Create(fileContent, returnString);
+
+            return retTuple;
         }
 
-        public Byte[] GetFileByByFileStorageName(string storageName)
+        public Tuple<Byte[], string> GetFileByFileStorageName(string storageName)
         {
             var file = _dbContext
                 .FilesStorage
@@ -148,8 +154,11 @@ namespace ModelStationAPI.Services
             if (!File.Exists(file.FullPath))
                 throw new NotFoundException("There is no file with that Id");
 
+            var returnString = file.StorageName + "." + file.FileType;
             var fileContent = File.ReadAllBytes(file.FullPath);
-            return fileContent;
+            var retTuple = Tuple.Create(fileContent, returnString);
+
+            return retTuple;
         }
 
         public FileStorageDTO GetById(int id)

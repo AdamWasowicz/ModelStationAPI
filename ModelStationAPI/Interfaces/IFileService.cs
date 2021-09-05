@@ -1,17 +1,18 @@
 ﻿using ModelStationAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace ModelStationAPI.Interfaces
 {
     public interface IFileService
     {
-        bool Delete(int id, int userId);
+        bool Delete(int id, ClaimsPrincipal userClaims);
         FileStorageDTO GetById(int id);
-        byte[] GetFileByByFileStorageName(string storageName);
-        byte[] GetFileByFileStorageId(int fileStorageId);
+        Tuple<byte[], string> GetFileByFileStorageName(string storageName);
+        Tuple<byte[], string> GetFileByFileStorageId(int fileStorageId);
         List<FileStorageDTO> GetFilesByPostId(int postId);
         FileStorageDTO GetUserImage(int userId);
-        int Upload(CreateFileStorageDTO dto);
+        int Upload(CreateFileStorageDTO dto, ClaimsPrincipal userClaims);
     }
 }

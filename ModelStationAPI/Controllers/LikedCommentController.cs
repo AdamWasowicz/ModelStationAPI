@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ModelStationAPI.Controllers
 {
-    [Route("api/v1/likedcommet")]
+    [Route("api/v1/likedcomment")]
     [ApiController]
     public class LikedCommentController : Controller
     {

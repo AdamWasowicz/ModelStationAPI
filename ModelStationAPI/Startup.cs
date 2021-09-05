@@ -19,7 +19,6 @@ using ModelStationAPI.Interfaces;
 using ModelStationAPI.Middleware;
 using ModelStationAPI.Models;
 using ModelStationAPI.Services;
-using ModelStationAPI.Tests;
 using ModelStationAPI.Validation;
 using System;
 using System.Collections.Generic;

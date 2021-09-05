@@ -19,9 +19,9 @@ namespace ModelStationAPI.Authorization
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasAccessLevelAtLeast requirement)
         {
-            var roleId = Convert.ToInt32(context.User.FindFirst(c => c.Type == "Role").Value);
+            var roleId = Convert.ToInt32(context.User.FindFirst(c => c.Type == "RoleId").Value);
             var Role = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId);
-            if (Role != null)
+            if (Role == null)
                 throw new NotFoundException("Role with this Id does not exist");
 
             var accessLevel = Role.AccessLevel;

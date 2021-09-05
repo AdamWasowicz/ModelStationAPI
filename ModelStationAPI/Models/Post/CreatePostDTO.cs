@@ -9,7 +9,6 @@ namespace ModelStationAPI.Models
     public class CreatePostDTO
     {
         public string Title { get; set; }
-        public string ImageSource { get; set; }
         public string Text { get; set; }
 
         //Files

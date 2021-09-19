@@ -392,6 +392,87 @@ namespace ModelStationAPI.Services
 
             return postDTO;
         }
+        public PostQuerryResult GetByQuery(PostQuery query)
+        {
+            //Sort By:
+            //  -> Date
+            //  -> Likes
+            //
+            //Order By:
+            //  -> ASC
+            //  -> DSC
+            //
+            // Category Name
+            // UserName
+            //
+            //Paginacja
+
+            var posts = _dbContext
+                .Posts
+                .Include(p => p.User)
+                .Include(p => p.PostCategory)
+                    .ToList();
+
+            posts = posts
+                .Where(p => p.IsActive == true)
+                .Where(p => p.IsBanned == false)
+                    .ToList();
+
+            //Search Phase
+            posts = posts
+                .Where(p => query.PostCategory == null ||
+                    (p.PostCategory.Name.ToLower().Contains(query.PostCategory.ToLower())))
+                .Where(p => query.Title == null ||
+                    (p.Title.ToLower().Contains(query.Title.ToLower())))
+                .Where(p => query.UserName == null ||
+                    (p.User.UserName.ToLower().Contains(query.UserName.ToLower())))
+                .ToList();
+
+
+            //Sorting
+            if (query.OrderByAtribute != null && query.OrderByAtribute != SortAtribute.NONE)
+            {
+                if (query.OrderByAtribute == SortAtribute.LIKES)
+                {
+                    posts = query.OrderByDirection == SortDirection.ASC ?
+                        posts.OrderBy(p => p.Likes).ToList() :
+                        posts.OrderByDescending(p => p.Likes).ToList();
+                }
+                else if (query.OrderByAtribute == SortAtribute.DATE)
+                {
+                    posts = query.OrderByDirection == SortDirection.ASC ?
+                        posts.OrderBy(p => p.CreationDate).ToList() :
+                        posts.OrderByDescending(p => p.CreationDate).ToList();
+                }
+            }
+
+            //Paginacja
+            var retPosts = posts
+                .Skip(query.NumberOfPosts * (query.CurrentPage - 1))
+                .Take(query.NumberOfPosts)
+                .ToList();
+
+
+            if (retPosts.Count == 0)
+                throw new NotFoundException("There are no posts to be displayed");
+
+            var postsDTO = _mapper.Map<List<PostDTO>>(retPosts);
+
+            //Files
+            for (int i = 0; i < postsDTO.Count; i++)
+                IncludeFiles(postsDTO[i]);
+
+            //Comments
+            for (int i = 0; i < postsDTO.Count; i++)
+                IncludeComments(postsDTO[i]);
+
+
+            var totalItemsCount = posts.Count();
+            var result = new PostQuerryResult(postsDTO, totalItemsCount, query.NumberOfPosts, query.CurrentPage);
+
+
+            return result;
+        }
 
 
         public List<PostDTO> GetPostsByPostCategoryId(int categoryId)

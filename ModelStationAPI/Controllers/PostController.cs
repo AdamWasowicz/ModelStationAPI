@@ -24,7 +24,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Policy = "IsAdmin")]
+        [Authorize(Policy = "IsAdmin")]
         public ActionResult<List<PostDTO>> GetAll()
         {
             var postsDTO = _postService.GetAll();
@@ -32,6 +32,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<PostDTO> GetById([FromRoute] int id)
         {
             var postDTO = _postService.GetById(id);
@@ -40,6 +41,18 @@ namespace ModelStationAPI.Controllers
                 return NotFound();
 
             return Ok(postDTO);
+        }
+
+        [HttpGet("query")]
+        [AllowAnonymous]
+        public ActionResult<PostQuerryResult> GetByQuery([FromQuery] PostQuery query)
+        {
+            var result = _postService.GetByQuery(query);
+
+            if (result.Posts.Count == 0)
+                return NoContent();
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -69,6 +82,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("user/{id}")]
+        [AllowAnonymous]
         public ActionResult<List<PostDTO>> GetPostByUserId([FromRoute] int id)
         {
             var postsDTO = _postService.GetPostsByUserId(id);
@@ -80,6 +94,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("postcategory/{id}")]
+        [AllowAnonymous]
         public ActionResult<List<PostDTO>> GetPostByCategoryId([FromRoute] int id)
         {
             var postsDTO = _postService.GetPostsByPostCategoryId(id);
@@ -91,6 +106,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("user/{username}")]
+        [AllowAnonymous]
         public ActionResult<List<PostDTO>> GetPostByUserName([FromRoute] string username)
         {
             var postsDTO = _postService.GetPostsByUserName(username);
@@ -102,6 +118,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet("postcategory/{name}")]
+        [AllowAnonymous]
         public ActionResult<List<PostDTO>> GetPostByCategoryName([FromRoute] string name)
         {
             var postsDTO = _postService.GetPostsByPostCategoryName(name);

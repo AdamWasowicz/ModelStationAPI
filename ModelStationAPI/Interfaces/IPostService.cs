@@ -16,6 +16,7 @@ namespace ModelStationAPI.Interfaces
 
         List<PostDTO> GetAll();
         PostDTO GetById(int id);
+        PostQuerryResult GetByQuery(PostQuery query);
 
 
         bool UnBanPostByPostId(int postId, ClaimsPrincipal userClaims);

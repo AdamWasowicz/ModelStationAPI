@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Authorization\ResourceOperationRequirement\User\" />
+    <Folder Include="Files\Static\" />
     <Folder Include="Seeders\User\" />
     <Folder Include="Files\FileStorage\" />
   </ItemGroup>

@@ -55,6 +55,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "IsAdmin")]
         public ActionResult Delete([FromRoute] int id)
         {
             bool isDeleted = _userService.Delete(id);
@@ -66,6 +67,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "IsUser")]
         public ActionResult Edit([FromBody] EditUserDTO dto)
         {
             //Check if model is valid

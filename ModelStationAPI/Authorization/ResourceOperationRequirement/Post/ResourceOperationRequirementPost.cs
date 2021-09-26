@@ -6,16 +6,6 @@ using System.Threading.Tasks;
 
 namespace ModelStationAPI.Authorization
 {
-    public enum ResourceOperation
-    {
-        Create,
-        Read,
-        Update,
-        Delete,
-        Ban,
-        ChangeActivity
-    }
-
     public class ResourceOperationRequirementPost : IAuthorizationRequirement
     {
         public ResourceOperationRequirementPost(ResourceOperation resourceOperation)

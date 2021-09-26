@@ -1,5 +1,11 @@
 ﻿Important:
-	-More refractoring
+	-Autoryzacja do User
+	-Możliwość Banowania User
+	-Możliwość Zmieniania stanu aktywności User
+	-Zmienić sposób przechowywania zdjęć w UserDTO
+		-> Zmienić metody które wykorzystują UserDTO
 
 Not Important:
 	-Seeder
+
+	-Ponowne zrobienie Validatorów

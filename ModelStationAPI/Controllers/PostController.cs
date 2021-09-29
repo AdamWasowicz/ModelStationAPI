@@ -55,6 +55,30 @@ namespace ModelStationAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("banner/title/{title}")]
+        [AllowAnonymous]
+        public ActionResult<List<PostBannerDTO>> GetBannersByTitle([FromRoute] string title)
+        {
+            var results = _postService.SearchPostByTitle_ReturnBanners(title);
+
+            if (results.Count == 0)
+                return NoContent();
+
+            return Ok(results);
+        }
+
+        [HttpGet("banner/query")]
+        [AllowAnonymous]
+        public ActionResult<List<PostBannerDTO>> GetBannersByQuery([FromQuery] PostQuery query)
+        {
+            var results = _postService.SearchByQuery_ReturnBanners(query);
+
+            if (results.Count == 0)
+                return NoContent();
+
+            return Ok(results);
+        }
+
         [HttpPost]
         [Authorize(Policy = "IsUser")]
         public ActionResult CreatePost([FromForm] CreatePostDTO dto)

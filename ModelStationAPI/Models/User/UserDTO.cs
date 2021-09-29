@@ -14,8 +14,12 @@ namespace ModelStationAPI.Models
         public string Surname { get; set; }
         public DateTime RegisterDate { get; set; }
         public string Description { get; set; }
+
+        //Status
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }
-        public int? FileStorageId { get; set; }
+       
+        //Photo
+        public FileStorageDTO File { get; set; }
     }
 }

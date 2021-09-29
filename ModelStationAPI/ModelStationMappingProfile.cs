@@ -14,12 +14,15 @@ namespace ModelStationAPI
         public ModelStationMappingProfile()
         {
             //Post
-            //Post to PostDTO
+            //Post to ...
             CreateMap<Post, PostDTO>()
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.User.Id))
                 .ForMember(m => m.UserName, c => c.MapFrom(s => s.User.UserName))
                 .ForMember(m => m.PostCategoryId, c => c.MapFrom(s => s.PostCategory.Id))
                 .ForMember(m => m.PostCategoryName, c => c.MapFrom(s => s.PostCategory.Name));
+            CreateMap<Post, PostBannerDTO>()
+                .ForMember(m => m.User_UserName, c => c.MapFrom(s => s.User.UserName))
+                .ForMember(m => m.PostCategory_Name, c => c.MapFrom(s => s.PostCategory.Name));
             //CreatePostDTO to Post
             CreateMap<CreatePostDTO, Post>();
 
@@ -35,8 +38,9 @@ namespace ModelStationAPI
 
 
             //User
-            //User to UserDTO
+            //User to ...
             CreateMap<User, UserDTO>();
+            CreateMap<User, UserBannerDTO>();
             //CreateUserDTO to User
             CreateMap<CreateUserDTO, User>();
 

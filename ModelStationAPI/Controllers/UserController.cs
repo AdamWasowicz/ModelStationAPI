@@ -17,10 +17,12 @@ namespace ModelStationAPI.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IFileService _fileService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IFileService fileService)
         {
             _userService = userService;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -58,7 +60,7 @@ namespace ModelStationAPI.Controllers
         [Authorize(Policy = "IsAdmin")]
         public ActionResult Delete([FromRoute] int id)
         {
-            bool isDeleted = _userService.Delete(id);
+            bool isDeleted = _userService.Delete(id, User);
 
             if (isDeleted)
                 return NoContent();
@@ -74,12 +76,84 @@ namespace ModelStationAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool result = _userService.Edit(dto);
+            bool result = _userService.Edit(dto, User);
 
             if (result)
                 return Ok();
 
             return NotFound();
+        }
+
+        [HttpPatch("ban/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult BanUserById([FromRoute] int id)
+        {
+            var result = _userService.BanUserByUserId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPatch("toggle/activity/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult ToggleActivity([FromRoute] int id)
+        {
+            var result = _userService.ChangeActiveStateByUserId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpGet("username/{username}")]
+        [AllowAnonymous]
+        public ActionResult<UserDTO> GetUserByUserName([FromRoute] string username)
+        {
+            var result = _userService.GetByUserName(username);
+
+            if (result != null)
+                return Ok(result);
+
+            return NoContent();
+        }
+
+        [HttpGet("banners/{username}")]
+        [AllowAnonymous]
+        public ActionResult<List<UserBannerDTO>> GetBannersByUserName([FromRoute] string username)
+        {
+            var results = _userService.SearchUsers_ReturnBanners(username);
+
+            if (results != null)
+                return Ok(results);
+
+            return NoContent();
+        }
+
+        [HttpPatch("unban/id/{id}")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult UnBanUserById([FromRoute] int id)
+        {
+            var result = _userService.UnBanUserByUserId(id, User);
+
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPost("upload/photo")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult UploadImage([FromForm] CreateFileStorageDTO dto)
+        {
+            var result = _fileService.Upload(dto, User);
+
+            if (result != -1)
+                return Created(result.ToString(), null);
+
+            return BadRequest();
         }
     }
 }

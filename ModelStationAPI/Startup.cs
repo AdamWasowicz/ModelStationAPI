@@ -97,6 +97,7 @@ namespace ModelStationAPI
             //AuthorizationHandlers
             services.AddScoped<IAuthorizationHandler, HasAccessLevelAtLeastHandler>();
             services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementPostHandler>();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementUserHandler>();
 
 
             //Controllers

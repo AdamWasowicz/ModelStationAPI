@@ -11,7 +11,6 @@ namespace ModelStationAPI.Entities
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastEditDate { get; set; }
-        public string ImageSource { get; set; }
         public string Text { get; set; }
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }

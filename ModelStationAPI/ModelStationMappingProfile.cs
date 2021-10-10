@@ -56,14 +56,14 @@ namespace ModelStationAPI
             //LikedPost to LikedPostDTO
             CreateMap<LikedComment, LikedPostDTO>();
             //CreateLikedPostDTO to LikedPost
-            CreateMap<CreateLikedPostDTO, LikedComment>();
+            CreateMap<CreateLikedPostDTO, LikedPost>();
 
 
             //LikedComment
             //LikedComment to LikedCommentDTO
             CreateMap<LikedPost, LikedCommentDTO>();
             //CreateLikedCommentDTO to LikedPost
-            CreateMap<CreateLikedCommentDTO, LikedPost>();
+            CreateMap<CreateLikedCommentDTO, LikedComment>();
 
 
             //FileStorage

@@ -49,7 +49,7 @@ namespace ModelStationAPI.Services
                 .Include(c => c.User)
                 .Include(c => c.Post)
                     .Where(c => c.IsBanned == false)
-                    .Where(c => c.IsActive == false)
+                    .Where(c => c.IsActive == true)
                     .Where(c => c.PostId == id)
                         .ToList();
 
@@ -110,7 +110,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                 new ResourceOperationRequirementPost(ResourceOperation.Delete));
 
-            if (!authorizationResult.IsCompletedSuccessfully)
+            if (!(authorizationResult.Result.Succeeded))
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
@@ -151,8 +151,8 @@ namespace ModelStationAPI.Services
 
             var post = _dbContext
                 .Posts
-                .Where(p => p.Id == dto.Id)
-                .FirstOrDefault();
+                    .Where(p => p.Id == dto.Id)
+                        .FirstOrDefault();
 
             if (post == null)
                 throw new NotFoundException("There is no Post with that Id");
@@ -160,13 +160,13 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                 new ResourceOperationRequirementPost(ResourceOperation.Update));
 
-            if (!authorizationResult.IsCompletedSuccessfully)
+            if (!(authorizationResult.Result.Succeeded))
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
 
             if (post.UserId != userId)
-                throw new NoPermissionException("You can't delete someone else's post");
+                throw new NoPermissionException("You can't edit someone else's post");
 
             //Changes
             if (dto.Title != null && dto.Title.Length > 0)
@@ -201,7 +201,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                 new ResourceOperationRequirementPost(ResourceOperation.Ban));
 
-            if (!authorizationResult.IsCompletedSuccessfully)
+            if (!authorizationResult.Result.Succeeded)
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
@@ -226,7 +226,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                 new ResourceOperationRequirementPost(ResourceOperation.Ban));
 
-            if (!authorizationResult.IsCompletedSuccessfully)
+            if (authorizationResult.Result.Succeeded)
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
@@ -257,7 +257,7 @@ namespace ModelStationAPI.Services
                 var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                     new ResourceOperationRequirementPost(ResourceOperation.Ban));
 
-                if (authorizationResult.IsCompletedSuccessfully)
+                if (authorizationResult.Result.Succeeded)
                     post.IsBanned = true;
             }
 
@@ -286,7 +286,7 @@ namespace ModelStationAPI.Services
                 var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                     new ResourceOperationRequirementPost(ResourceOperation.Ban));
 
-                if (authorizationResult.IsCompletedSuccessfully)
+                if (authorizationResult.Result.Succeeded)
                     post.IsBanned = false;
             }
 
@@ -309,7 +309,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
                 new ResourceOperationRequirementPost(ResourceOperation.ChangeActivity));
 
-            if (!authorizationResult.IsCompletedSuccessfully)
+            if (!authorizationResult.Result.Succeeded)
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
@@ -418,7 +418,7 @@ namespace ModelStationAPI.Services
 
 
             //Sorting
-            if (query.OrderByAtribute != null && query.OrderByAtribute != SortAtribute.NONE)
+            if (query.OrderByAtribute != SortAtribute.NONE)
             {
                 if (query.OrderByAtribute == SortAtribute.LIKES)
                 {
@@ -517,7 +517,7 @@ namespace ModelStationAPI.Services
 
 
             //Sorting
-            if (query.OrderByAtribute != null && query.OrderByAtribute != SortAtribute.NONE)
+            if (query.OrderByAtribute != SortAtribute.NONE)
             {
                 if (query.OrderByAtribute == SortAtribute.LIKES)
                 {

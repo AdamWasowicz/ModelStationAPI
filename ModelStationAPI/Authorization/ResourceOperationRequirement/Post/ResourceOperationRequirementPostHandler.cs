@@ -30,6 +30,9 @@ namespace ModelStationAPI.Authorization
 
                 else if (post.UserId == userId)
                     context.Succeed(requirement);
+
+                else
+                    context.Fail();
             }
             else
             {

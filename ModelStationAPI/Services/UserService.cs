@@ -40,13 +40,14 @@ namespace ModelStationAPI.Services
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _authorizationService = authorizationService;
+            _fileService = fileService;
         }
 
 
         //Complementary functions
         private void IncludeFiles(UserDTO dto)
         {
-            dto.File = _fileService.GetUserImage(dto.Id);
+            dto.File = _fileService.GetUserImage_ReturnDTO(dto.Id);
         }
 
 
@@ -68,7 +69,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.Ban));
 
-            if (authorizationResult.IsCompletedSuccessfully)
+            if (authorizationResult.Result.Succeeded)
                 user.IsBanned = true;
             else
                 return false;
@@ -93,7 +94,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.Ban));
 
-            if (authorizationResult.IsCompletedSuccessfully)
+            if (authorizationResult.Result.Succeeded)
                 user.IsBanned = false;
             else
                 return false;
@@ -118,7 +119,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.ChangeActivity));
 
-            if (authorizationResult.IsCompletedSuccessfully)
+            if (authorizationResult.Result.Succeeded)
                 user.IsActive = !user.IsActive;
             else
                 return false;
@@ -128,6 +129,7 @@ namespace ModelStationAPI.Services
             return true;
         }
 
+        
 
 
         //Old
@@ -184,14 +186,12 @@ namespace ModelStationAPI.Services
         {
             var users = _dbContext
                 .Users
-                .ToList();
+                    .ToList();
 
             if (users.Count == 0)
                 throw new NotFoundException("There are no Users in database");
 
             var results = _mapper.Map<List<UserDTO>>(users);
-            foreach (var result in results)
-                IncludeFiles(result);
 
             return results;
         }
@@ -227,7 +227,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.Delete));
 
-            if (!(authorizationResult.IsCompletedSuccessfully))
+            if (!(authorizationResult.Result.Succeeded))
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
@@ -261,7 +261,7 @@ namespace ModelStationAPI.Services
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.Update));
 
-            if (!(authorizationResult.IsCompletedSuccessfully))
+            if (!(authorizationResult.Result.Succeeded))
                 throw new NoPermissionException("This user do not have premission to do that");
 
             return true;
@@ -277,19 +277,19 @@ namespace ModelStationAPI.Services
                 throw new NotFoundException("There is no User with that Id");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, user,
-                new ResourceOperationRequirementUser(ResourceOperation.Ban));
+                new ResourceOperationRequirementUser(ResourceOperation.Update));
 
-            if (!authorizationResult.IsCompletedSuccessfully)
+            if (!authorizationResult.Result.Succeeded)
                 throw new NoPermissionException("This user do not have premission to do that");
 
             //Change
-            if (dto.Name.Length != 0)
+            if (dto.Name?.Length != 0)
                 user.Name = dto.Name;
-            if (dto.Surname.Length != 0)
+            if (dto.Surname?.Length != 0)
                 user.Surname = dto.Surname;
-            if (dto.Gender.ToString().Length == 1)
+            if (dto.Gender?.ToString().Length == 1)
                 user.Gender = dto.Gender;
-            if (dto.Description.Length != 0)
+            if (dto.Description?.Length != 0)
                 user.Description = dto.Description;
 
             user.LastEditDate = DateTime.Now;

@@ -30,6 +30,8 @@ namespace ModelStationAPI.Authorization
 
                 else if (user.Id == userId)
                     context.Succeed(requirement);
+                else
+                    context.Fail();
             }
             else
             {
@@ -41,6 +43,7 @@ namespace ModelStationAPI.Authorization
             }
 
             return Task.CompletedTask;
+
         }
     }
 }

@@ -64,7 +64,7 @@ namespace ModelStationAPI
             {
                 //HasAccessLevelAtLEast
                 options.AddPolicy("IsUser", builder => builder.AddRequirements(new HasAccessLevelAtLeast(3)));
-                options.AddPolicy("IsModeator", builder => builder.AddRequirements(new HasAccessLevelAtLeast(6)));
+                options.AddPolicy("IsModerator", builder => builder.AddRequirements(new HasAccessLevelAtLeast(6)));
                 options.AddPolicy("IsAdmin", builder => builder.AddRequirements(new HasAccessLevelAtLeast(10)));
             });
         }
@@ -92,6 +92,7 @@ namespace ModelStationAPI
             AddAuthentication(services);
 
 
+
             //Authorization
             AddAuthorizationPolicy(services);
             //AuthorizationHandlers
@@ -100,14 +101,21 @@ namespace ModelStationAPI
             services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementUserHandler>();
 
 
+
             //Controllers
             services.AddControllers();
+
+
 
             //DbContext
             UseDatabase(services);
 
+
+
             //AutoMapper
             services.AddAutoMapper(this.GetType().Assembly);
+
+
 
             //Services
             services.AddScoped<IUserService, UserService>();
@@ -120,11 +128,16 @@ namespace ModelStationAPI
             services.AddScoped<IFileService, FileService>();
 
             
+
             //Middleware
             services.AddScoped<ErrorHandlingMiddleware>();
 
+
+
             //Hasher
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+
 
             //FluentValidation
             services.AddFluentValidation();
@@ -134,6 +147,7 @@ namespace ModelStationAPI
             services.AddScoped<IValidator<CreateCommentDTO>, CreateCommentDTO_Validator>();
             services.AddScoped<IValidator<CreatePostCategoryDTO>, CreatePostCategoryDTO_Validator>();
             services.AddScoped<IValidator<CreateLikedPostDTO>, CreateLikedPostDTO_Validator>();
+
             //Edit
             services.AddScoped<IValidator<EditPostDTO>, EditPostDTO_Validator>();
             services.AddScoped<IValidator<EditUserDTO>, EditUserDTO_Validator>();
@@ -141,7 +155,11 @@ namespace ModelStationAPI
             services.AddScoped<IValidator<EditLikedCommentDTO>, EditLikedCommentDTO_Validator>();
             services.AddScoped<IValidator<EditCommentDTO>, EditCommentDTO_Validator>();
             services.AddScoped<IValidator<EditPostCategoryDTO>, EditPostCategoryDTO_Validator>();
-            
+
+            //Querry
+            services.AddScoped<IValidator<PostQuery>, PostQuery_Validator>();
+
+
 
             //Swagger
             services.AddSwaggerGen(c =>

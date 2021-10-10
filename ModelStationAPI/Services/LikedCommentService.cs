@@ -55,6 +55,19 @@ namespace ModelStationAPI.Services
             likedComment.CreationDate = DateTime.Now;
 
             _dbContext.LikedComments.Add(likedComment);
+
+            var comment = _dbContext
+                .Comments
+                    .Where(c => c.Id == dto.CommentId)
+                        .FirstOrDefault();
+
+            comment.Likes = comment.Likes + dto.Value;
+
+            if (dto.Value == 0)
+                _dbContext.LikedComments.Remove(likedComment);
+            else
+                likedComment.Value = dto.Value;
+
             _dbContext.SaveChanges();
 
             return likedComment.Id;
@@ -64,8 +77,8 @@ namespace ModelStationAPI.Services
         {
             var likedComment = _dbContext
                 .LikedComments
-                .Where(lc => lc.Id == dto.Id)
-                .FirstOrDefault();
+                    .Where(lc => lc.Id == dto.Id)
+                    .FirstOrDefault();
 
             if (likedComment == null)
                 throw new NotFoundException("There is not LikedComment with that Id");

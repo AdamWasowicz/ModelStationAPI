@@ -55,6 +55,19 @@ namespace ModelStationAPI.Services
             likedPost.CreationDate = DateTime.Now;
 
             _dbContext.LikedPosts.Add(likedPost);
+
+            var post = _dbContext
+                    .Posts
+                        .Where(p => p.Id == likedPost.PostId)
+                            .FirstOrDefault();
+
+            post.Likes = post.Likes + dto.Value;
+
+            if (dto.Value == 0)
+                _dbContext.LikedPosts.Remove(likedPost);
+            else
+                likedPost.Value = dto.Value;
+
             _dbContext.SaveChanges();
 
             return likedPost.Id;

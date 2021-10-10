@@ -19,7 +19,7 @@ using System.Security.Cryptography;
 namespace ModelStationAPI.Services
 {
     public class FileService : IFileService
-    { 
+    {
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly string fileStoragePath = "Files/FileStorage";
@@ -76,7 +76,7 @@ namespace ModelStationAPI.Services
                 FileStorage newFile = new FileStorage()
                 {
                     ContentType = dto.ContentType,
-                    PostId = (dto.PostId != 0 && dto.PostId != null) ? dto.PostId : 0,
+                    PostId = (dto.PostId != 0 && dto.PostId != null) ? dto.PostId : null,
                     FileType = extension,
                     UserGivenName = dto.File.FileName,
                     StorageName = fileName,
@@ -193,19 +193,37 @@ namespace ModelStationAPI.Services
             return filesDTO;
         }
 
-        public FileStorageDTO GetUserImage(int userId)
+        public FileStorageDTO GetUserImage_ReturnDTO(int userId)
         {
             var fileStorage = _dbContext
                 .FilesStorage
-                .Where(fs => fs.ContentType == "USER")
-                .Where(fs => fs.UserId == userId)
-                .FirstOrDefault();
+                    .Where(fs => fs.ContentType == "USER")
+                    .Where(fs => fs.UserId == userId)
+                        .FirstOrDefault();
 
             if (fileStorage == null)
                 throw new NotFoundException("This user does not have profile photo");
 
             var retFile = GetById(fileStorage.Id);
             return retFile;
+        }
+
+        public Tuple<Byte[], string> GetUserImage_ReturnImage(int userId)
+        {
+            var file = _dbContext
+                .FilesStorage
+                    .Where(fs => fs.UserId == userId)
+                    .Where(fs => fs.ContentType == "USER")
+                        .FirstOrDefault();
+
+            if (file == null || !File.Exists(file.FullPath))
+                throw new NotFoundException("This user does not have profile photo");
+
+            var returnString = file.StorageName + "." + file.FileType;
+            var fileContent = File.ReadAllBytes(file.FullPath);
+            var retTuple = Tuple.Create(fileContent, returnString);
+
+            return retTuple;
         }
 
         private void DeletePreviousUserImage(CreateFileStorageDTO dto)

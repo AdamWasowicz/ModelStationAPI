@@ -19,10 +19,12 @@ namespace ModelStationAPI.Controllers
     {
         private readonly IFileService _fileService;
 
+
         public FileStorageController(IFileService fileService)
         {
             _fileService = fileService;
         }
+
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "IsUser")]
@@ -36,6 +38,7 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
+
         [HttpGet("dto/{id}")]
         public ActionResult<FileStorageDTO> GetDTO_ById([FromRoute] int id)
         {
@@ -47,7 +50,8 @@ namespace ModelStationAPI.Controllers
             return Ok(fileStorageDTO);
         }
 
-        [HttpGet("name/{storagename}")]
+
+        [HttpGet("file/name/{storagename}")]
         public ActionResult GetFileByStorageName([FromRoute] string storageName)
         {
             var result = _fileService.GetFileByFileStorageName(storageName);
@@ -60,7 +64,8 @@ namespace ModelStationAPI.Controllers
             return File(file, type, name);
         }
 
-        [HttpGet("id/{id}")]
+
+        [HttpGet("file/id/{id}")]
         public ActionResult GetFileByStorageId([FromRoute] int id)
         {
             var result = _fileService.GetFileByFileStorageId(id);
@@ -73,6 +78,21 @@ namespace ModelStationAPI.Controllers
             return File(file, type, name);
         }
 
+
+        [HttpGet("file/userid/{id}")]
+        public ActionResult GetUserImage([FromRoute] int id)
+        {
+            var result = _fileService.GetUserImage_ReturnImage(id);
+            var file = result.Item1;
+            var name = result.Item2.Split('.')[0];
+
+            var contentProvider = new FileExtensionContentTypeProvider();
+            contentProvider.TryGetContentType(result.Item2, out string type);
+
+            return File(file, type, name);
+        }
+
+
         [HttpGet("dtos/{postid}")]
         public ActionResult<List<FileStorageDTO>> GetFilesByPostId([FromRoute] int postid)
         {
@@ -80,16 +100,18 @@ namespace ModelStationAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("userimage/{userid}")]
-        public ActionResult<FileStorageDTO> GetUserImage([FromRoute] int userid)
+
+        [HttpGet("userimage/dto/{userid}")]
+        public ActionResult<FileStorageDTO> GetUserImageDTO([FromRoute] int userid)
         {
-            var result = _fileService.GetUserImage(userid);
+            var result = _fileService.GetUserImage_ReturnDTO(userid);
             return Ok(result);
         }
 
+
         [HttpPost]
         [Authorize(Policy = "IsUser")]
-        public ActionResult Upload([FromBody] CreateFileStorageDTO dto)
+        public ActionResult Upload([FromForm] CreateFileStorageDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)

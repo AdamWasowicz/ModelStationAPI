@@ -97,7 +97,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPatch("toggle/activity/{id}")]
-        [Authorize(Policy = "IsModerator")]
+        [Authorize(Policy = "IsUser")]
         public ActionResult ToggleActivity([FromRoute] int id)
         {
             var result = _userService.ChangeActiveStateByUserId(id, User);

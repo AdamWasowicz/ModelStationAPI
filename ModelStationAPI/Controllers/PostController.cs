@@ -24,7 +24,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "IsAdmin")]
+        //[Authorize(Policy = "IsAdmin")]
         public ActionResult<List<PostDTO>> GetAll()
         {
             var postsDTO = _postService.GetAll();
@@ -105,7 +105,7 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
-        [HttpGet("user/{id}")]
+        [HttpGet("user/id/{id}")]
         [AllowAnonymous]
         public ActionResult<List<PostDTO>> GetPostByUserId([FromRoute] int id)
         {
@@ -129,7 +129,7 @@ namespace ModelStationAPI.Controllers
             return Ok(postsDTO);
         }
 
-        [HttpGet("user/{username}")]
+        [HttpGet("user/username/{username}")]
         [AllowAnonymous]
         public ActionResult<List<PostDTO>> GetPostByUserName([FromRoute] string username)
         {

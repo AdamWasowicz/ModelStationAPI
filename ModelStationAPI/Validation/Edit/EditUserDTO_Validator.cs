@@ -38,10 +38,13 @@ namespace ModelStationAPI.Validation
             RuleFor(u => u.Gender)
                 .Custom((value, context) =>
                 {
-                    var validGender = Genders.Contains(Convert.ToChar(value));
+                    if (value != null)
+                    {
+                        var validGender = Genders.Contains(Convert.ToChar(value));
 
-                    if (!validGender)
-                        context.AddFailure("Gender", "INVALID");
+                        if (!validGender)
+                            context.AddFailure("Gender", "INVALID");
+                    }
                 });
 
 

@@ -1,6 +1,4 @@
 ﻿Important:
-	-Refraktor UserService
-	-A potem refraktor usercontroller
 
 Not Important:
 	-Seeder

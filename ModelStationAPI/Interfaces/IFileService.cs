@@ -9,10 +9,11 @@ namespace ModelStationAPI.Interfaces
     {
         bool Delete(int id, ClaimsPrincipal userClaims);
         FileStorageDTO GetById(int id);
-        Tuple<byte[], string> GetFileByFileStorageName(string storageName);
         Tuple<byte[], string> GetFileByFileStorageId(int fileStorageId);
+        Tuple<byte[], string> GetFileByFileStorageName(string storageName);
         List<FileStorageDTO> GetFilesByPostId(int postId);
-        FileStorageDTO GetUserImage(int userId);
+        FileStorageDTO GetUserImage_ReturnDTO(int userId);
+        Tuple<byte[], string> GetUserImage_ReturnImage(int userId);
         int Upload(CreateFileStorageDTO dto, ClaimsPrincipal userClaims);
     }
 }

@@ -1,6 +1,4 @@
 ﻿Important:
 
 Not Important:
-	-Seeder
-
 	-Ponowne zrobienie Validatorów

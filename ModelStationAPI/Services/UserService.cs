@@ -129,8 +129,6 @@ namespace ModelStationAPI.Services
             return true;
         }
 
-        
-
 
         //Old
         public UserDTO GetById(int id)

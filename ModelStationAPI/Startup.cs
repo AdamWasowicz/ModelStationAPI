@@ -160,6 +160,18 @@ namespace ModelStationAPI
             services.AddScoped<IValidator<PostQuery>, PostQuery_Validator>();
 
 
+            //CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontEndClient", builder =>
+                {
+                    builder.AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .WithOrigins(Configuration["AllowedOrigins"]);
+                });
+            });
+
+
 
             //Swagger
             services.AddSwaggerGen(c =>
@@ -171,6 +183,9 @@ namespace ModelStationAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //UseCORS
+            app.UseCors("FrontEndClient");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

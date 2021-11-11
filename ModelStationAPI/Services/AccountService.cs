@@ -39,7 +39,7 @@ namespace ModelStationAPI.Services
             var user = _dbContext
                 .Users
                 .Include(u => u.Role)
-                    .Where(u => u.Email == dto.Email)
+                    .Where(u => u.Name == dto.UserName)
                         .FirstOrDefault();
 
             var userDTO = _mapper.Map<UserDTO>(user);
@@ -71,7 +71,7 @@ namespace ModelStationAPI.Services
             var user = _dbContext
                 .Users
                 .Include(u => u.Role)
-                    .Where(u => u.Email == dto.Email)
+                    .Where(u => u.Name == dto.UserName)
                         .FirstOrDefault();
 
             if (user is null)

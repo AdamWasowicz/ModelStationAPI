@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ModelStationAPI.Entities;
 using ModelStationAPI.Exceptions;
 using ModelStationAPI.Interfaces;
 using ModelStationAPI.Models;
+using ModelStationAPI.Models.Account;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,13 +22,49 @@ namespace ModelStationAPI.Services
         private readonly ModelStationDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IMapper _mapper;
 
-        public AccountService(ModelStationDbContext dbContext, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        public AccountService(ModelStationDbContext dbContext, IPasswordHasher<User> passwordHasher, 
+            AuthenticationSettings authenticationSettings, IMapper mapper)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _mapper = mapper;
         }
+
+        public LoginResultDTO Login(LoginDTO dto)
+        {
+            var jwt = GenerateJwt(dto);
+            var user = _dbContext
+                .Users
+                .Include(u => u.Role)
+                    .Where(u => u.Email == dto.Email)
+                        .FirstOrDefault();
+
+            var userDTO = _mapper.Map<UserDTO>(user);
+
+            var userFile = _dbContext
+                .FilesStorage
+                    .Where(u => u.UserId == userDTO.Id)
+                    .Where(t => t.ContentType == "USER")
+                        .FirstOrDefault();
+
+            if (userFile != null)
+            {
+                var userFileDTO = _mapper.Map<FileStorageDTO>(userFile);
+                userDTO.File = userFileDTO;
+            }
+
+            var loginResultDTO = new LoginResultDTO
+            {
+                user = userDTO,
+                jwt = jwt
+            };
+
+            return loginResultDTO;
+        }
+
 
         public string GenerateJwt(LoginDTO dto)
         {

@@ -8,6 +8,7 @@ using ModelStationAPI.Models;
 using AutoMapper;
 using ModelStationAPI.Services;
 using ModelStationAPI.Interfaces;
+using ModelStationAPI.Models.Account;
 
 namespace ModelStationAPI.Controllers
 {
@@ -22,10 +23,10 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login([FromBody] LoginDTO dto)
+        public ActionResult<LoginResultDTO> Login([FromBody] LoginDTO dto)
         {
-            string token = _accountService.GenerateJwt(dto);
-            return Ok(token);
+            var LoginResultDTO = _accountService.Login(dto);
+            return Ok(dto);
         }
 
     }

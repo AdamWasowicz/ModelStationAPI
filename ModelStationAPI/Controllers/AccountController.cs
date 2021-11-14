@@ -26,7 +26,7 @@ namespace ModelStationAPI.Controllers
         public ActionResult<LoginResultDTO> Login([FromBody] LoginDTO dto)
         {
             var LoginResultDTO = _accountService.Login(dto);
-            return Ok(dto);
+            return Ok(LoginResultDTO);
         }
 
     }

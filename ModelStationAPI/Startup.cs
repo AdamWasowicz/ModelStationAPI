@@ -186,6 +186,9 @@ namespace ModelStationAPI
             //UseCORS
             app.UseCors("FrontEndClient");
 
+            //UseCache
+            app.UseResponseCaching();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

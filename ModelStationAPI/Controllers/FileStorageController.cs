@@ -52,6 +52,7 @@ namespace ModelStationAPI.Controllers
 
 
         [HttpGet("file/name/{storagename}")]
+        [ResponseCache(Duration = 1200, VaryByQueryKeys = new[] {"storageName"})]
         public ActionResult GetFileByStorageName([FromRoute] string storageName)
         {
             var result = _fileService.GetFileByFileStorageName(storageName);

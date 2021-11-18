@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using ModelStationAPI.Interfaces;
 using ModelStationAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ModelStationAPI.Services
 {
@@ -48,6 +49,22 @@ namespace ModelStationAPI.Services
             return likedPostDTO;
         }
 
+        public LikedPostDTO GetByPostId(int id, ClaimsPrincipal userClaims)
+        {
+            int UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+            var likedPost = _dbContext
+                .LikedPosts
+                    .Where(lp => lp.PostId == id)
+                    .Where(lp => lp.UserId == UserId)
+                        .FirstOrDefault();
+
+            if (likedPost == null)
+                throw new NotFoundException("There is no LikedPost with that PostId");
+
+            var likedPostDTO = _mapper.Map<LikedPostDTO>(likedPost);
+            return likedPostDTO;
+        }
+
         public int Create(CreateLikedPostDTO dto)
         {
             var likedPost = _mapper.Map<LikedPost>(dto);
@@ -71,6 +88,47 @@ namespace ModelStationAPI.Services
             _dbContext.SaveChanges();
 
             return likedPost.Id;
+        }
+
+        public bool EditByPostId(EditLikedPostDTO dto, ClaimsPrincipal userClaims)
+        {
+            int UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+            var likedPost = _dbContext
+                .LikedPosts
+                    .Where(lp => lp.PostId == dto.Id)
+                    .Where(lp => lp.UserId == UserId)
+                        .FirstOrDefault();
+
+            if (likedPost == null)
+                return false;
+
+            var post = _dbContext
+                    .Posts
+                        .Where(p => p.Id == likedPost.PostId)
+                            .FirstOrDefault();
+
+            //Reset and change value
+            //100<+> -> <=>
+            //99<=>
+            //99<=> -> <->
+            //98<->
+
+            //99<=> -> <+>
+            //100<+>
+
+            //99<=> -> <->
+            //98<->
+            post.Likes = post.Likes - likedPost.Value + dto.Value;
+
+            if (dto.Value == 0)
+                _dbContext.LikedPosts.Remove(likedPost);
+            else
+                likedPost.Value = dto.Value;
+
+
+            _dbContext.SaveChanges();
+
+            return true;
         }
 
         public bool Edit(EditLikedPostDTO dto)

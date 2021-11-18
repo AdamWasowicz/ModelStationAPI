@@ -30,7 +30,8 @@ namespace ModelStationAPI.Controllers
             return Ok(likedPostsDTO);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("likedpost/id/{id}")]
+        [Authorize(Policy = "IsUser")]
         public ActionResult<LikedPostDTO> GetById([FromRoute] int id)
         {
             var likedPostDTO = _likedPostService.GetById(id);
@@ -42,7 +43,21 @@ namespace ModelStationAPI.Controllers
 
         }
 
+        [HttpGet("post/id/{id}")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult<LikedPostDTO> GetByPostId([FromRoute] int id)
+        {
+            var likedPostDTO = _likedPostService.GetByPostId(id, User);
+
+            if (likedPostDTO == null)
+                return NotFound();
+
+            return Ok(likedPostDTO);
+
+        }
+
         [HttpPost]
+        [Authorize(Policy = "IsUser")]
         public ActionResult CreateLikedPost([FromBody] CreateLikedPostDTO dto)
         {
             //Check if model is valid
@@ -54,8 +69,25 @@ namespace ModelStationAPI.Controllers
             return Created(createdId.ToString(), null);
         }
 
-        [HttpPatch]
-        public ActionResult EditLikedPost([FromBody] EditLikedPostDTO dto)
+        [HttpPatch("likedpost/id")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult EditLikedPostByLikedPostId([FromBody] EditLikedPostDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = _likedPostService.EditByPostId(dto, User);
+
+            if (result == true)
+                return Ok();
+
+            return NotFound();
+        }
+
+        [HttpPatch("post/id")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult EditLikedPostByPostId([FromBody] EditLikedPostDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)

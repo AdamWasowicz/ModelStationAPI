@@ -62,7 +62,7 @@ namespace ModelStationAPI.Services
         public int Create(CreatePostDTO dto, ClaimsPrincipal userClaims)
         {
             var post = _mapper.Map<Post>(dto);
-            post.UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value); ;
+            post.UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
             post.IsActive = true;
             post.IsBanned = false;
             post.CreationDate = DateTime.Now;

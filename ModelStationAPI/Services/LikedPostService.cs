@@ -184,12 +184,13 @@ namespace ModelStationAPI.Services
             if (likedPost == null)
             {
                 //CREATE
-                var newLikedPost = _mapper.Map<LikedPost>(likedPost);
+                var newLikedPost = _mapper.Map<LikedPost>(dto);
 
                 newLikedPost.UserId = UserId;
                 newLikedPost.CreationDate = DateTime.Now;
 
                 _dbContext.LikedPosts.Add(newLikedPost);
+                _dbContext.SaveChanges();
 
                 var post = _dbContext
                         .Posts

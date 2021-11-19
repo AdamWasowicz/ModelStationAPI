@@ -10,6 +10,7 @@ namespace ModelStationAPI.Interfaces
     public interface ILikedPostService
     {
         int Create(CreateLikedPostDTO dto);
+        bool CreateOrEdit(CreateOrEditLikedPostDTO dto, ClaimsPrincipal userClaims);
         bool Edit(EditLikedPostDTO dto);
         bool EditByPostId(EditLikedPostDTO dto, ClaimsPrincipal userClaims);
         List<LikedPostDTO> GetAll();

@@ -143,8 +143,8 @@ namespace ModelStationAPI.Services
 
             var post = _dbContext
                     .Posts
-                    .Where(p => p.Id == likedPost.PostId)
-                    .FirstOrDefault();
+                        .Where(p => p.Id == likedPost.PostId)
+                            .FirstOrDefault();
 
             //Reset and change value
             //100<+> -> <=>
@@ -168,6 +168,65 @@ namespace ModelStationAPI.Services
             _dbContext.SaveChanges();
 
             return true;
+        }
+
+        public bool CreateOrEdit(CreateOrEditLikedPostDTO dto, ClaimsPrincipal userClaims)
+        {
+            int UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
+            var likedPost = _dbContext
+                .LikedPosts
+                    .Where(lp => lp.PostId == dto.PostId)
+                    .Where(lp => lp.UserId == UserId)
+                        .FirstOrDefault();
+
+
+            if (likedPost == null)
+            {
+                //CREATE
+                var newLikedPost = _mapper.Map<LikedPost>(likedPost);
+
+                newLikedPost.UserId = UserId;
+                newLikedPost.CreationDate = DateTime.Now;
+
+                _dbContext.LikedPosts.Add(newLikedPost);
+
+                var post = _dbContext
+                        .Posts
+                            .Where(p => p.Id == newLikedPost.PostId)
+                                .FirstOrDefault();
+
+                post.Likes = post.Likes + dto.Value;
+
+                if (dto.Value == 0)
+                    _dbContext.LikedPosts.Remove(newLikedPost);
+                else
+                    newLikedPost.Value = dto.Value;
+
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+            else
+            {
+                //EDIT
+                var post = _dbContext
+                    .Posts
+                        .Where(p => p.Id == likedPost.PostId)
+                            .FirstOrDefault();
+
+                post.Likes = post.Likes - likedPost.Value + dto.Value;
+
+                if (dto.Value == 0)
+                    _dbContext.LikedPosts.Remove(likedPost);
+                else
+                    likedPost.Value = dto.Value;
+
+
+                _dbContext.SaveChanges();
+
+                return true;
+            }
         }
 
         public List<LikedPostDTO> GetLikedPostsByUserId(int userId)

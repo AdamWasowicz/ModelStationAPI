@@ -69,6 +69,19 @@ namespace ModelStationAPI.Controllers
             return Created(createdId.ToString(), null);
         }
 
+        [HttpPost("create_or_edit")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult<bool> CreateOrEditLikedPost([FromBody] CreateOrEditLikedPostDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            bool created = _likedPostService.CreateOrEdit(dto, User);
+
+            return Ok();
+        }
+
         [HttpPatch("likedpost/id")]
         [Authorize(Policy = "IsUser")]
         public ActionResult EditLikedPostByLikedPostId([FromBody] EditLikedPostDTO dto)

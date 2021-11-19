@@ -1,6 +1,4 @@
 ﻿Important:
-	-Change what AccountService -> Login Returns
-		: It should return token and user information
 
 Not Important:
 	-Ponowne zrobienie Validatorów

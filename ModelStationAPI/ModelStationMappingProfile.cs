@@ -25,6 +25,7 @@ namespace ModelStationAPI
                 .ForMember(m => m.PostCategory_Name, c => c.MapFrom(s => s.PostCategory.Name));
             //CreatePostDTO to Post
             CreateMap<CreatePostDTO, Post>();
+            CreateMap<CreatePostWithPostCategoryNameDTO, Post>();
 
 
             //Comment

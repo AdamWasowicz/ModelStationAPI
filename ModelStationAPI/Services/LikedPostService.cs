@@ -59,7 +59,7 @@ namespace ModelStationAPI.Services
                         .FirstOrDefault();
 
             if (likedPost == null)
-                throw new NotFoundException("There is no LikedPost with that PostId");
+                return null;
 
             var likedPostDTO = _mapper.Map<LikedPostDTO>(likedPost);
             return likedPostDTO;

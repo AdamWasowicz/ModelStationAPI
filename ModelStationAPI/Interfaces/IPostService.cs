@@ -10,6 +10,7 @@ namespace ModelStationAPI.Interfaces
     public interface IPostService
     {
         int Create(CreatePostDTO dto, ClaimsPrincipal userClaims);
+        int CreateWithPostCategoryName(CreatePostWithPostCategoryNameDTO dto, ClaimsPrincipal userClaims);
         bool Delete(int id, ClaimsPrincipal userClaims);
         bool Edit(EditPostDTO dto, ClaimsPrincipal userClaims);
 

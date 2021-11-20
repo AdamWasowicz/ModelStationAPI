@@ -93,6 +93,20 @@ namespace ModelStationAPI.Controllers
             return Created(createdId.ToString(), null);
         }
 
+        [HttpPost("withpostcategoryname")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult CreatePostWithPostCategoryName([FromForm] CreatePostWithPostCategoryNameDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int userId = Convert.ToInt32(User.FindFirst(c => c.Type == "UserId").Value);
+            int createdId = _postService.CreateWithPostCategoryName(dto, User);
+
+            return Created(createdId.ToString(), null);
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Policy = "IsUser")]
         public ActionResult DeletePost([FromRoute] int id)

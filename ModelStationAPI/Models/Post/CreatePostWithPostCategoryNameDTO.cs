@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelStationAPI.Models
 {
-    public class CreatePostDTO
+    public class CreatePostWithPostCategoryNameDTO
     {
         public string Title { get; set; }
         public string Text { get; set; }
@@ -14,6 +14,6 @@ namespace ModelStationAPI.Models
         //Files
         public IFormFile[] Files { get; set; }
 
-        public int? PostCategoryId { get; set; }
+        public string PostCategoryName { get; set; }
     }
 }

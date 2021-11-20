@@ -79,6 +79,7 @@ namespace ModelStationAPI.Services
             _dbContext.Posts.Add(post);
             _dbContext.SaveChanges();
 
+
             //Files
             foreach (var file in dto.Files)
             {
@@ -92,6 +93,61 @@ namespace ModelStationAPI.Services
 
                 _fileService.Upload(createFileDto, userClaims);
             }
+
+            return post.Id;
+        }
+        public int CreateWithPostCategoryName(CreatePostWithPostCategoryNameDTO dto, ClaimsPrincipal userClaims)
+        {
+            var post = _mapper.Map<Post>(dto);
+            post.UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+            post.IsActive = true;
+            post.IsBanned = false;
+            post.CreationDate = DateTime.Now;
+            post.LastEditDate = post.CreationDate;
+            post.Likes = 0;
+            post.PostCategoryId = null;
+
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Create));
+
+            if (!authorizationResult.IsCompletedSuccessfully)
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
+            if (dto.PostCategoryName.Length > 0)
+            {
+                var postCategory = _dbContext
+                    .PostCategories
+                        .Where(pc => pc.Name == dto.PostCategoryName)
+                            .FirstOrDefault();
+
+                if (postCategory != null)
+                {
+                    post.PostCategoryId = postCategory.Id;
+                }
+            }
+
+
+            //Post
+            _dbContext.Posts.Add(post);
+            _dbContext.SaveChanges();
+
+
+            //Files
+            foreach (var file in dto.Files)
+            {
+                var createFileDto = new CreateFileStorageDTO()
+                {
+                    UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value),
+                    PostId = post.Id,
+                    ContentType = "POST",
+                    File = file
+                };
+
+                _fileService.Upload(createFileDto, userClaims);
+            }
+
 
             return post.Id;
         }

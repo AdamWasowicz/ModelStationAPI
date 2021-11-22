@@ -184,6 +184,22 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
+        [HttpPatch("/postcategoryname")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult EditWithPostCategoryName([FromBody] EditPostWithPostCategoryNameDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = _postService.EditWithPostCategoryName(dto, User);
+
+            if (result)
+                return Ok();
+
+            return NotFound();
+        }
+
 
 
         //Moderation

@@ -13,6 +13,7 @@ namespace ModelStationAPI.Interfaces
         int CreateWithPostCategoryName(CreatePostWithPostCategoryNameDTO dto, ClaimsPrincipal userClaims);
         bool Delete(int id, ClaimsPrincipal userClaims);
         bool Edit(EditPostDTO dto, ClaimsPrincipal userClaims);
+        bool EditWithPostCategoryName(EditPostWithPostCategoryNameDTO dto, ClaimsPrincipal userClaims);
 
 
         List<PostDTO> GetAll();

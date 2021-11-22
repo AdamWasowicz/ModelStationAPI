@@ -240,6 +240,53 @@ namespace ModelStationAPI.Services
 
             return true;
         }
+        public bool EditWithPostCategoryName(EditPostWithPostCategoryNameDTO dto, ClaimsPrincipal userClaims)
+        {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
+            var post = _dbContext
+                .Posts
+                    .Where(p => p.Id == dto.Id)
+                        .FirstOrDefault();
+
+            if (post == null)
+                throw new NotFoundException("There is no Post with that Id");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(userClaims, post,
+                new ResourceOperationRequirementPost(ResourceOperation.Update));
+
+            if (!(authorizationResult.Result.Succeeded))
+                throw new NoPermissionException("This user do not have premission to do that");
+
+
+            if (post.UserId != userId)
+                throw new NoPermissionException("You can't edit someone else's post");
+
+            //Changes
+            if (dto.Title != null && dto.Title.Length > 0)
+                post.Title = dto.Title;
+
+            if (dto.Text != null && dto.Text.Length > 0)
+                post.Text = dto.Text;
+
+            if (dto.PostCategoryName?.Length > 0)
+            {
+                var postCategory = _dbContext
+                    .PostCategories
+                        .Where(pc => pc.Name == dto.PostCategoryName)
+                            .FirstOrDefault();
+
+                if (postCategory != null)
+                    post.PostCategoryId = postCategory.Id;
+                
+            }
+
+            post.LastEditDate = DateTime.Now;
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
 
 
         public bool UnBanPostByPostId(int postId, ClaimsPrincipal userClaims)
@@ -498,7 +545,7 @@ namespace ModelStationAPI.Services
 
 
             if (retPosts.Count == 0)
-                throw new NotFoundException("There are no posts to be displayed");
+                return null;
 
             var postsDTO = _mapper.Map<List<PostDTO>>(retPosts);
 

@@ -263,10 +263,10 @@ namespace ModelStationAPI.Services
                 throw new NoPermissionException("You can't edit someone else's post");
 
             //Changes
-            if (dto.Title != null && dto.Title.Length > 0)
+            //if (dto.Title != null && dto.Title.Length > 0)
                 post.Title = dto.Title;
 
-            if (dto.Text != null && dto.Text.Length > 0)
+            //if (dto.Text != null && dto.Text.Length > 0)
                 post.Text = dto.Text;
 
             if (dto.PostCategoryName?.Length > 0)
@@ -279,6 +279,10 @@ namespace ModelStationAPI.Services
                 if (postCategory != null)
                     post.PostCategoryId = postCategory.Id;
                 
+            }
+            else
+            {
+                post.PostCategoryId = null;
             }
 
             post.LastEditDate = DateTime.Now;

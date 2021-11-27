@@ -184,7 +184,7 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
-        [HttpPatch("/postcategoryname")]
+        [HttpPatch("postcategoryname")]
         [Authorize(Policy = "IsUser")]
         public ActionResult EditWithPostCategoryName([FromBody] EditPostWithPostCategoryNameDTO dto)
         {

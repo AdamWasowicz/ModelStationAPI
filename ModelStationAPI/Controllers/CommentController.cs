@@ -8,6 +8,7 @@ using ModelStationAPI.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ModelStationAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModelStationAPI.Controllers
 {
@@ -66,21 +67,23 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "IsUser")]
         public ActionResult CreateComment([FromBody] CreateCommentDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            int createdId = _commentService.Create(dto);
+            int createdId = _commentService.Create(dto, User);
 
             return Created(createdId.ToString(), null);
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "IsUser")]
         public ActionResult Delete([FromRoute] int id)
         {
-            bool isDeleted = _commentService.Delete(id);
+            bool isDeleted = _commentService.Delete(id, User);
 
             if (isDeleted)
                 return NoContent();
@@ -89,13 +92,14 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPatch]
+        [Authorize(Policy = "IsUser")]
         public ActionResult EditComment([FromBody] EditCommentDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool result = _commentService.Edit(dto);
+            bool result = _commentService.Edit(dto, User);
 
             if (result)
                 return Ok();

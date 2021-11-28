@@ -15,26 +15,15 @@ namespace ModelStationAPI.Validation
             RuleFor(c => c.Text)
                 .NotEmpty();
 
-            RuleFor(c => c.UserId)
-                .NotEmpty()
-                .Custom((value, context) =>
-                {
-                    var userExist = dbContext.Users.Any(u => u.Id == value);
-
-                    if (!userExist)
-                        context.AddFailure("User", "NOT FOUND");
-                });
-
-
             RuleFor(c => c.PostId)
-                .NotEmpty()
-                .Custom((value, context) =>
-                {
-                    var postExist = dbContext.Posts.Any(p => p.Id == value);
+                .NotEmpty();
+                //.Custom((value, context) =>
+                //{
+                //    var postExist = dbContext.Posts.Any(p => p.Id == value);
 
-                    if (!postExist)
-                        context.AddFailure("Post", "NOT FOUND");
-                });
+                //    if (!postExist)
+                //        context.AddFailure("Post", "NOT FOUND");
+                //});
         }
     }
 }

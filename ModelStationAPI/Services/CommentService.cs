@@ -7,6 +7,7 @@ using ModelStationAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ModelStationAPI.Services
@@ -49,10 +50,12 @@ namespace ModelStationAPI.Services
             return commentDTO;
         }
 
-        public int Create(CreateCommentDTO dto)
+        public int Create(CreateCommentDTO dto, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
             var comment = _mapper.Map<Comment>(dto);
 
+            comment.UserId = userId;
             comment.IsActive = true;
             comment.IsBanned = false;
             comment.CreationDate = DateTime.Now;
@@ -66,37 +69,49 @@ namespace ModelStationAPI.Services
 
         }
 
-        public bool Delete(int id)
+        public bool Delete(int id, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var comment = _dbContext
                 .Comments
-                .FirstOrDefault(c => c.Id == id);
+                    .FirstOrDefault(c => c.Id == id);
 
             if (comment is null)
                 throw new NotFoundException("Comment with that Id does not exist");
 
-            _dbContext.Comments.Remove(comment);
-            _dbContext.SaveChanges();
-
-            return true;
+            if (comment.UserId == userId)
+            {
+                _dbContext.Comments.Remove(comment);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            else
+                throw new NoPermissionException("You can't delete someone else comment");
         }
-        
-        public bool Edit(EditCommentDTO dto)
+
+        public bool Edit(EditCommentDTO dto, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var comment = _dbContext
                 .Comments
-                .FirstOrDefault(c => c.Id == dto.Id);
+                    .FirstOrDefault(c => c.Id == dto.Id);
 
             if (comment == null)
                 return false;
 
             //Change
-            comment.Text = dto.Text;
+            if (comment.UserId == userId)
+            {
+                comment.Text = dto.Text;
+                comment.LastEditDate = DateTime.Now;
 
-            comment.LastEditDate = DateTime.Now;
-
-            _dbContext.SaveChanges();
-            return true;
+                _dbContext.SaveChanges();
+                return true;
+            }
+            else
+                throw new NoPermissionException("You can't edit someone else comment");
         }
 
         public List<CommentDTO> GetCommentsByPostId(int postId)

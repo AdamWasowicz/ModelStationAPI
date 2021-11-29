@@ -249,9 +249,9 @@ namespace ModelStationAPI.Services
         {
             var likedPosts = _dbContext
                 .LikedPosts
-                .Include(lp => lp.User)
-                .Where(lp => lp.PostId == postId)
-                .ToList();
+                    .Include(lp => lp.User)
+                        .Where(lp => lp.PostId == postId)
+                            .ToList();
 
             if (likedPosts.Count == 0)
                 throw new NotFoundException("There is no LikedPost with that PostId");

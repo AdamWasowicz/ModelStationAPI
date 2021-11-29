@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using ModelStationAPI.Interfaces;
 using ModelStationAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ModelStationAPI.Services
 {
@@ -48,10 +49,28 @@ namespace ModelStationAPI.Services
             return likedCommentDTO;
         }
 
-        public int Create(CreateLikedCommentDTO dto)
+        public LikedCommentDTO GetByCommentId(int id, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+            var likedComment = _dbContext
+                .LikedComments
+                    .Where(lc => lc.CommentId == id)
+                    .Where(lc => lc.UserId == userId)
+                        .FirstOrDefault();
+
+            if (likedComment == null)
+                return null;
+
+            var likedCommentDTO = _mapper.Map<LikedCommentDTO>(likedComment);
+            return likedCommentDTO;
+        }
+
+        public int Create(CreateLikedCommentDTO dto, ClaimsPrincipal userClaims)
+        {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
             var likedComment = _mapper.Map<LikedComment>(dto);
 
+            likedComment.UserId = userId;
             likedComment.CreationDate = DateTime.Now;
 
             _dbContext.LikedComments.Add(likedComment);
@@ -73,20 +92,21 @@ namespace ModelStationAPI.Services
             return likedComment.Id;
         }
 
-        public bool Edit(EditLikedCommentDTO dto)
+        public bool Edit(EditLikedCommentDTO dto, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
             var likedComment = _dbContext
                 .LikedComments
                     .Where(lc => lc.Id == dto.Id)
-                    .FirstOrDefault();
+                        .FirstOrDefault();
 
             if (likedComment == null)
                 throw new NotFoundException("There is not LikedComment with that Id");
 
             var comment = _dbContext
                 .Comments
-                .Where(c => c.Id == likedComment.CommentId)
-                .FirstOrDefault();
+                    .Where(c => c.Id == likedComment.CommentId)
+                        .FirstOrDefault();
 
             comment.Likes = comment.Likes - likedComment.Value + dto.Value;
 
@@ -97,6 +117,61 @@ namespace ModelStationAPI.Services
 
             _dbContext.SaveChanges();
             return true;
+        }
+
+        public bool CreateOrEdit(CreateOrEditLikedCommentDTO dto, ClaimsPrincipal userClaims)
+        {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+            var likedComment = _dbContext
+                .LikedComments
+                    .Where(lc => lc.Id == dto.CommentId)
+                        .FirstOrDefault();
+
+            if (likedComment == null)
+            {
+                //CREATE
+                var newLikedComment = _mapper.Map<LikedComment>(dto);
+                newLikedComment.UserId = userId;
+                newLikedComment.CreationDate = DateTime.Now;
+
+                _dbContext.LikedComments.Add(newLikedComment);
+                _dbContext.SaveChanges();
+
+                var comment = _dbContext
+                    .Comments
+                        .Where(c => c.Id == newLikedComment.CommentId)
+                            .FirstOrDefault();
+
+                comment.Likes = comment.Likes + dto.Value;
+
+                if (dto.Value == 0)
+                    _dbContext.LikedComments.Remove(newLikedComment);
+                else
+                    newLikedComment.Value = dto.Value;
+
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+            else
+            {
+                //EDIT
+                var comment = _dbContext
+                    .Comments
+                        .Where(c => c.Id == likedComment.CommentId)
+                            .FirstOrDefault();
+
+                comment.Likes = comment.Likes - likedComment.Value + dto.Value;
+
+                if (dto.Value == 0)
+                    _dbContext.LikedComments.Remove(likedComment);
+                else
+                    likedComment.Value = dto.Value;
+
+                _dbContext.SaveChanges();
+
+                return true;
+            }
         }
 
         public List<LikedCommentDTO> GetLikedCommentsByUserId(int userId)

@@ -25,26 +25,26 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "IsUser")]
         public ActionResult Create([FromBody] CreateLikedCommentDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            int createdId = _likedCommentService.Create(dto);
+            int createdId = _likedCommentService.Create(dto, User);
             return Created(createdId.ToString(), null);
         }
 
         [HttpPatch]
-        [Authorize]
+        [Authorize(Policy = "IsUser")]
         public ActionResult Edit([FromBody] EditLikedCommentDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = _likedCommentService.Edit(dto);
+            var result = _likedCommentService.Edit(dto, User);
 
             if (result)
                 return Ok();
@@ -52,9 +52,22 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
+        [HttpPatch("create_or_edit")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult CreateOrEdit([FromBody] CreateOrEditLikedCommentDTO dto)
+        {
+            //Check if model is valid
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = _likedCommentService.CreateOrEdit(dto, User);
+
+            return Ok();
+        }
+
         //To be added
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Policy = "IsUser")]
         public ActionResult Delete([FromBody] int id)
         {
             return Ok();
@@ -74,6 +87,19 @@ namespace ModelStationAPI.Controllers
             var result = _likedCommentService.GetById(id);
             return Ok(result);
         }
+
+        [HttpGet("comment/id/{id}")]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult<LikedCommentDTO> GetByCommentId([FromRoute] int id)
+        {
+            var result = _likedCommentService.GetByCommentId(id, User);
+
+            if (result == null)
+                return NotFound();
+
+            return result;
+        }
+
 
         [HttpGet("user/{id}")]
         public ActionResult<List<LikedCommentDTO>> GetLikedCommentsByUserId([FromRoute] int id)

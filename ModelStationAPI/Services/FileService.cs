@@ -91,8 +91,11 @@ namespace ModelStationAPI.Services
                 _dbContext.FilesStorage.Add(newFile);
                 _dbContext.SaveChanges();
 
-                user.FileStorageId = newFile.Id;
-                _dbContext.SaveChanges();
+                if (dto.ContentType == "USER")
+                {
+                    user.FileStorageId = newFile.Id;
+                    _dbContext.SaveChanges();
+                }
 
                 return newFile.Id;
             }
@@ -111,6 +114,28 @@ namespace ModelStationAPI.Services
 
             if (fileStorage.UserId != userId)
                 throw new UnauthorizedAccessException("This user has no acces to that file");
+
+            if (fileStorage == null)
+                throw new NotFoundException("There is no FileStorage with that Id");
+
+            string path = fileStorage.FullPath;
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException();
+
+            File.Delete(path);
+            if (File.Exists(path))
+                throw new Exception("File could not be deleted");
+
+            return true;
+        }
+        public bool DeleteCascade(int id)
+        {
+            var fileStorage = _dbContext
+                .FilesStorage
+                    .Where(fs => fs.Id == id)
+                        .FirstOrDefault();
+
 
             if (fileStorage == null)
                 throw new NotFoundException("There is no FileStorage with that Id");

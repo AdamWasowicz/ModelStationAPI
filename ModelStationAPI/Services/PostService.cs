@@ -247,6 +247,7 @@ namespace ModelStationAPI.Services
 
             return true;
         }
+
         public bool Edit(EditPostDTO dto, ClaimsPrincipal userClaims)
         {
             int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
@@ -323,8 +324,22 @@ namespace ModelStationAPI.Services
                             .FirstOrDefault();
 
                 if (postCategory != null)
-                    post.PostCategoryId = postCategory.Id;
-                
+                {
+                    var newPostCategoryDTO = new CreatePostCategoryDTO()
+                    {
+                        Name = dto.PostCategoryName,
+                        Description = "Kategoria stworzona automatycznie"
+                    };
+
+                    var newPostCategory = _mapper.Map<PostCategory>(newPostCategoryDTO);
+
+                    _dbContext.PostCategories.Add(postCategory);
+                    _dbContext.SaveChanges();
+
+                    post.PostCategoryId = newPostCategory.Id;
+
+                    _dbContext.SaveChanges();
+                }
             }
             else
             {

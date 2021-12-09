@@ -35,8 +35,8 @@ namespace ModelStationAPI.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-                relationship.DeleteBehavior = DeleteBehavior.Restrict;
-            
+                relationship.DeleteBehavior = DeleteBehavior.Cascade;
+
 
             //Comments
             modelBuilder.Entity<Comment>()
@@ -85,6 +85,11 @@ namespace ModelStationAPI.Entities
 
 
             //Users
+            //modelBuilder.Entity<User>()
+            //    .HasMany(u => u.LikedComments)
+            //    .WithOne(c => c.User)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<User>()
                 .Property(p => p.Email)
                 .IsRequired();
@@ -120,7 +125,13 @@ namespace ModelStationAPI.Entities
 
 
             //LikedComment
-            //Nothing there
+            //modelBuilder.Entity<LikedComment>()
+            //    .HasOne(lc => lc.User)
+            //    .WithMany(u => u.LikedComments)
+            //    .OnDelete(DeleteBehavior.NoAction);
+                
+                
+
 
 
             //FileStorage

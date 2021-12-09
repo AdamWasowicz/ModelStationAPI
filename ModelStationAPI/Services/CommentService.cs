@@ -39,9 +39,10 @@ namespace ModelStationAPI.Services
         {
             var comment = _dbContext
                 .Comments
-                .Include(c => c.User)
-                .Include(c => c.Post)
-                .FirstOrDefault();
+                    .Include(c => c.User)
+                    .Include(c => c.Post)
+                        .Where(c => c.Id == id)
+                            .FirstOrDefault();
 
             if (comment == null)
                 throw new NotFoundException("There is no comment with that Id");

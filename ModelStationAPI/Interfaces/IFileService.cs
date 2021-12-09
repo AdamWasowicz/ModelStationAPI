@@ -8,6 +8,7 @@ namespace ModelStationAPI.Interfaces
     public interface IFileService
     {
         bool Delete(int id, ClaimsPrincipal userClaims);
+        bool DeleteCascade(int id);
         FileStorageDTO GetById(int id);
         Tuple<byte[], string> GetFileByFileStorageId(int fileStorageId);
         Tuple<byte[], string> GetFileByFileStorageName(string storageName);

@@ -68,7 +68,7 @@ namespace ModelStationAPI.Controllers
 
         [HttpPost]
         [Authorize(Policy = "IsUser")]
-        public ActionResult CreateComment([FromBody] CreateCommentDTO dto)
+        public ActionResult<string> CreateComment([FromBody] CreateCommentDTO dto)
         {
             //Check if model is valid
             if (!ModelState.IsValid)
@@ -76,7 +76,7 @@ namespace ModelStationAPI.Controllers
 
             int createdId = _commentService.Create(dto, User);
 
-            return Created(createdId.ToString(), null);
+            return Ok(createdId);
         }
 
         [HttpDelete("{id}")]

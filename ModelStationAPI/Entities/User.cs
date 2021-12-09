@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace ModelStationAPI.Entities
 {
     public class User
     {
+        [Key]
         public int Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
@@ -25,6 +27,7 @@ namespace ModelStationAPI.Entities
         public int? FileStorageId { get; set; }
 
 
+
         public int RoleId { get; set; }
         public virtual Role Role { get; set;}
 
@@ -32,7 +35,7 @@ namespace ModelStationAPI.Entities
         public virtual List<Comment> Comments { get; set; }
 
         //NEW
-        public virtual List<LikedComment> LikedPosts { get; set; }
-        public virtual List<LikedPost> LikedComments { get; set; }
+        public virtual List<LikedPost> LikedPosts { get; set; }
+        public virtual List<LikedComment> LikedComments { get; set; }
     }
 }

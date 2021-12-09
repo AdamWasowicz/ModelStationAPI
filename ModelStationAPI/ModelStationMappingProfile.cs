@@ -33,7 +33,8 @@ namespace ModelStationAPI
             CreateMap<Comment, CommentDTO>()
                 .ForMember(m => m.UserId, c => c.MapFrom(s => s.User.Id))
                 .ForMember(m => m.UserName, c => c.MapFrom(s => s.User.UserName))
-                .ForMember(m => m.PostId, c => c.MapFrom(s => s.Post.Id));
+                .ForMember(m => m.PostId, c => c.MapFrom(s => s.Post.Id))
+                .ForMember(m => m.UserImageId, c => c.MapFrom(s => s.User.FileStorageId));
             //CreateCommentDTO to Comment
             CreateMap<CreateCommentDTO, Comment>();
 

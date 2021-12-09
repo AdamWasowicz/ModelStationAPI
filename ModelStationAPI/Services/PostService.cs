@@ -22,7 +22,6 @@ namespace ModelStationAPI.Services
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
-        private readonly ICommentService _commentService;
         private readonly IAuthorizationService _authorizationService;
 
         public PostService(ModelStationDbContext dbContext,
@@ -161,6 +160,7 @@ namespace ModelStationAPI.Services
                 .Where(p => p.Id == id)
                     .FirstOrDefault();
 
+
             if (post == null)
                 throw new NotFoundException("There is no Post with that Id");
 
@@ -170,31 +170,75 @@ namespace ModelStationAPI.Services
             if (!(authorizationResult.Result.Succeeded))
                 throw new NoPermissionException("This user do not have premission to do that");
 
-
-
             if (post.UserId != userId)
                 throw new NoPermissionException("You can't delete someone else's post");
 
 
 
             //HERE DELETE FILES OF THAT POST
-            var files = _dbContext
-                .FilesStorage
-                    .Where(fs => fs.ContentType == "POST")
-                    .Where(fs => fs.PostId == id)
-                        .ToList();
-
-            foreach (var file in files)
             {
-                if (!File.Exists(file.FullPath))
-                    throw new FileNotFoundException();
+                var files = _dbContext
+                    .FilesStorage
+                        .Where(fs => fs.ContentType == "POST")
+                        .Where(fs => fs.PostId == id)
+                            .ToList();
 
-                File.Delete(file.FullPath);
-                if (File.Exists(file.FullPath))
-                    throw new Exception("File could not be deleted");
+                foreach (var file in files)
+                {
+                    if (!File.Exists(file.FullPath))
+                        throw new FileNotFoundException();
 
-                _dbContext.FilesStorage.Remove(file);
-                _dbContext.SaveChanges();
+                    File.Delete(file.FullPath);
+                    if (File.Exists(file.FullPath))
+                        throw new Exception("File could not be deleted");
+
+                    _dbContext.FilesStorage.Remove(file);
+                    _dbContext.SaveChanges();
+                }
+            }
+
+
+            //HERE DELETE COMMENTS FOR THIS POST
+            {
+                var comments = _dbContext
+                    .Comments
+                        .Where(c => c.PostId == post.Id)
+                            .ToList();
+
+                foreach (var comment in comments)
+                {
+                    //LikedComments
+                    var likedComments = _dbContext
+                        .LikedComments
+                            .Where(lc => lc.CommentId == comment.Id)
+                                .ToList();
+
+                    foreach (var likedcomment in likedComments)
+                    {
+                        _dbContext.Remove(likedcomment);
+                        _dbContext.SaveChanges();
+                    }
+
+
+                    //Remove Comment
+                    _dbContext.Comments.Remove(comment);
+                    _dbContext.SaveChanges();
+                }
+            }
+
+
+            //HERE REMOVE LIKEDPOST
+            {
+                var likedPosts = _dbContext
+                    .LikedPosts
+                        .Where(lp => lp.PostId == post.Id)
+                            .ToList();
+
+                foreach (var likedPost in likedPosts)
+                {
+                    _dbContext.LikedPosts.Remove(likedPost);
+                    _dbContext.SaveChanges();
+                }
             }
 
 

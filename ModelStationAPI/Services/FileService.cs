@@ -89,9 +89,9 @@ namespace ModelStationAPI.Services
 
 
                 _dbContext.FilesStorage.Add(newFile);
+                _dbContext.SaveChanges();
 
                 user.FileStorageId = newFile.Id;
-
                 _dbContext.SaveChanges();
 
                 return newFile.Id;

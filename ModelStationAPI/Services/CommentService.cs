@@ -82,7 +82,9 @@ namespace ModelStationAPI.Services
 
             if (comment.UserId == userId)
             {
-                _dbContext.Comments.Remove(comment);
+                comment.IsActive = false;
+                //_dbContext.Comments.Remove(comment);
+
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -118,10 +120,11 @@ namespace ModelStationAPI.Services
         {
             var comments = _dbContext
                 .Comments
-                .Include(c => c.User)
-                .Include(c => c.Post)
-                .Where(c => c.PostId == postId)
-                .ToList();
+                    .Include(c => c.User)
+                    .Include(c => c.Post)
+                        .Where(c => c.PostId == postId)
+                        .Where(c => c.IsActive == true)
+                            .ToList();
 
             var commentsDTO = _mapper.Map<List<CommentDTO>>(comments);
             return commentsDTO;

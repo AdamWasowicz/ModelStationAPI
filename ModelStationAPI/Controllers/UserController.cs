@@ -45,6 +45,7 @@ namespace ModelStationAPI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult CreateUser([FromBody] CreateUserDTO dto)
         {
             //Check if model is valid

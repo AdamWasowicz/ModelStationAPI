@@ -49,7 +49,7 @@ namespace ModelStationAPI.Controllers
         {
             var result = _postService.GetByQuery(query);
 
-            if (result.Posts.Count == 0)
+            if (result?.Posts.Count == 0)
                 return NoContent();
 
             return Ok(result);

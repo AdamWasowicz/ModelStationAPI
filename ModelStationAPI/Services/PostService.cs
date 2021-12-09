@@ -22,6 +22,7 @@ namespace ModelStationAPI.Services
         private readonly ModelStationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
+        private readonly ICommentService _commentService;
         private readonly IAuthorizationService _authorizationService;
 
         public PostService(ModelStationDbContext dbContext,
@@ -115,7 +116,7 @@ namespace ModelStationAPI.Services
                 throw new NoPermissionException("This user do not have premission to do that");
 
 
-            if (dto.PostCategoryName.Length > 0)
+            if (dto.PostCategoryName != null && dto.PostCategoryName.Length > 0)
             {
                 var postCategory = _dbContext
                     .PostCategories
@@ -195,6 +196,7 @@ namespace ModelStationAPI.Services
                 _dbContext.FilesStorage.Remove(file);
                 _dbContext.SaveChanges();
             }
+
 
             _dbContext.Posts.Remove(post);
             _dbContext.SaveChanges();

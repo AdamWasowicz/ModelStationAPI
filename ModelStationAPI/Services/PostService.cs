@@ -576,8 +576,7 @@ namespace ModelStationAPI.Services
 
             //Search Phase
             posts = posts
-                .Where(p => query.PostCategory == null ||
-                    (p.PostCategory.Name.ToLower().Contains(query.PostCategory.ToLower())))
+                .Where(p => query.PostCategory == null || (p.PostCategory != null && p.PostCategory.Name.ToLower().Contains(query.PostCategory.ToLower())))
                 .Where(p => query.Title == null ||
                     (p.Title.ToLower().Contains(query.Title.ToLower())))
                 .Where(p => query.UserName == null ||

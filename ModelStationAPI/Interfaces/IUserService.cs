@@ -17,5 +17,6 @@ namespace ModelStationAPI.Interfaces
         List<UserBannerDTO> SearchUsers_ReturnBanners(string userName);
         bool UnBanUserByUserId(int id, ClaimsPrincipal userClaims);
         bool UploadUserImage(CreateFileStorageDTO dto, ClaimsPrincipal userClaims);
+        UserProfileDTO GetUserProfileById(int id);
     }
 }

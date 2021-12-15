@@ -40,10 +40,9 @@ namespace ModelStationAPI
 
 
             //User
-            //User to ...
             CreateMap<User, UserDTO>();
             CreateMap<User, UserBannerDTO>();
-            //CreateUserDTO to User
+            CreateMap<User, UserProfileDTO>();
             CreateMap<CreateUserDTO, User>();
 
 

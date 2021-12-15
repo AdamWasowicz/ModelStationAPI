@@ -129,6 +129,40 @@ namespace ModelStationAPI.Services
             return true;
         }
 
+        public UserProfileDTO GetUserProfileById(int id)
+        {
+            var user = _dbContext
+                .Users
+                    .Where(u => u.Id == id)
+                        .FirstOrDefault();
+
+
+            //Map
+            var userProfileDTO = _mapper.Map<UserProfileDTO>(user);
+
+
+            //File
+            if (user.FileStorageId != null)
+                userProfileDTO.File = _fileService.GetById(Convert.ToInt32(user.FileStorageId));
+
+
+            //AmountOfPosts
+            userProfileDTO.AmountOfPosts = _dbContext
+                .Posts
+                    .Where(p => p.UserId == id)
+                        .Count();
+
+
+            //AmountOfComments
+            userProfileDTO.AmountOfComments = _dbContext
+                .Comments
+                    .Where(u => u.UserId == id)
+                        .Count();
+
+
+            return userProfileDTO;
+        }
+
 
         //Old
         public UserDTO GetById(int id)

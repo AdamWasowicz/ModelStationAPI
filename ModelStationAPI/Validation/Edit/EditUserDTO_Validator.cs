@@ -14,19 +14,6 @@ namespace ModelStationAPI.Validation
 
         public EditUserDTO_Validator(ModelStationDbContext dbContext)
         {
-            RuleFor(u => u.Id)
-                .NotEmpty()
-                .Custom((value, context) =>
-                {
-                    var userExist = dbContext
-                        .Users
-                        .Any(u => u.Id == value);
-
-                    if (!userExist)
-                        context.AddFailure("User", "NOT FOUND");
-                });
-
-
             RuleFor(u => u.Name)
                 .MaximumLength(64);
 

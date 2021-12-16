@@ -301,9 +301,11 @@ namespace ModelStationAPI.Services
 
         public bool Edit(EditUserDTO dto, ClaimsPrincipal userClaims)
         {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
             var user = _dbContext
                 .Users
-                    .FirstOrDefault(u => u.Id == dto.Id);
+                    .FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
                 throw new NotFoundException("There is no User with that Id");
@@ -315,14 +317,13 @@ namespace ModelStationAPI.Services
                 throw new NoPermissionException("This user do not have premission to do that");
 
             //Change
-            if (dto.Name?.Length != 0)
-                user.Name = dto.Name;
-            if (dto.Surname?.Length != 0)
-                user.Surname = dto.Surname;
+            user.Name = dto.Name;
+            user.Surname = dto.Surname;
+
             if (dto.Gender?.ToString().Length == 1)
                 user.Gender = dto.Gender;
-            if (dto.Description?.Length != 0)
-                user.Description = dto.Description;
+
+            user.Description = dto.Description;
 
             user.LastEditDate = DateTime.Now;
 

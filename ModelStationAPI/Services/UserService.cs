@@ -129,11 +129,11 @@ namespace ModelStationAPI.Services
             return true;
         }
 
-        public UserProfileDTO GetUserProfileById(int id)
+        public UserProfileDTO GetUserProfileById(string userName)
         {
             var user = _dbContext
                 .Users
-                    .Where(u => u.Id == id)
+                    .Where(u => u.UserName == userName)
                         .FirstOrDefault();
 
 
@@ -149,14 +149,14 @@ namespace ModelStationAPI.Services
             //AmountOfPosts
             userProfileDTO.AmountOfPosts = _dbContext
                 .Posts
-                    .Where(p => p.UserId == id)
+                    .Where(p => p.UserId == user.Id)
                         .Count();
 
 
             //AmountOfComments
             userProfileDTO.AmountOfComments = _dbContext
                 .Comments
-                    .Where(u => u.UserId == id)
+                    .Where(u => u.UserId == user.Id)
                         .Count();
 
 

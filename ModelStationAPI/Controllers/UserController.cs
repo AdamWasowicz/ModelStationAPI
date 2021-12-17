@@ -157,11 +157,11 @@ namespace ModelStationAPI.Controllers
             return BadRequest();
         }
 
-        [HttpGet("userprofile/id/{id}")]
+        [HttpGet("userprofile/id/{userName}")]
         [AllowAnonymous]
-        public ActionResult<UserProfileDTO> GetUserProfile([FromRoute] int id)
+        public ActionResult<UserProfileDTO> GetUserProfile([FromRoute] string userName)
         {
-            var result = _userService.GetUserProfileById(id);
+            var result = _userService.GetUserProfileById(userName);
 
             return Ok(result);
         }

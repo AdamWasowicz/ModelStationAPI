@@ -1,6 +1,7 @@
 ﻿using ModelStationAPI.Models;
 using ModelStationAPI.Models.Account;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace ModelStationAPI.Interfaces
 {
@@ -8,5 +9,7 @@ namespace ModelStationAPI.Interfaces
     {
         string GenerateJwt(LoginDTO dto);
         LoginResultDTO Login(LoginDTO dto);
+        int ChangePassword(ChangePasswordDTO dto, ClaimsPrincipal userClaims);
+        int DeleteAccount(DeleteAccountDTO dto, ClaimsPrincipal userClaims);
     }
 }

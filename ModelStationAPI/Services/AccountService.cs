@@ -66,6 +66,55 @@ namespace ModelStationAPI.Services
         }
 
 
+        public int ChangePassword(ChangePasswordDTO dto, ClaimsPrincipal userClaims)
+        {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
+            var user = _dbContext
+                .Users
+                    .Include(u => u.Role)
+                        .Where(u => u.Id == userId)
+                            .FirstOrDefault();
+
+            if (user is null)
+                return -1;
+
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
+            if (result == PasswordVerificationResult.Failed)
+                return -2;
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.NewPassword);
+            user.LastEditDate = DateTime.Now;
+
+            _dbContext.SaveChanges();
+
+            return 0;
+        }
+
+
+        public int DeleteAccount(DeleteAccountDTO dto, ClaimsPrincipal userClaims)
+        {
+            int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
+
+            var user = _dbContext
+                .Users
+                    .Include(u => u.Role)
+                        .Where(u => u.Id == userId)
+                            .FirstOrDefault();
+
+            if (user is null)
+                return -1;
+
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
+            if (result == PasswordVerificationResult.Failed)
+                return -2;
+
+            _dbContext.Users.Remove(user);
+            _dbContext.SaveChanges();
+
+            return 0;
+        }
+
         public string GenerateJwt(LoginDTO dto)
         {
             var user = _dbContext

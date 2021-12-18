@@ -9,6 +9,7 @@ using AutoMapper;
 using ModelStationAPI.Services;
 using ModelStationAPI.Interfaces;
 using ModelStationAPI.Models.Account;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModelStationAPI.Controllers
 {
@@ -29,5 +30,22 @@ namespace ModelStationAPI.Controllers
             return Ok(LoginResultDTO);
         }
 
+        [HttpPatch]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult<int> ChangePassword([FromBody] ChangePasswordDTO dto)
+        {
+            var result = _accountService.ChangePassword(dto, User);
+
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Authorize(Policy = "IsUser")]
+        public ActionResult<int> DeleteAccount([FromBody] DeleteAccountDTO dto)
+        {
+            var result = _accountService.DeleteAccount(dto, User);
+
+            return Ok(result);
+        }
     }
 }

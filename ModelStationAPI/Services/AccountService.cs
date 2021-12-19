@@ -22,15 +22,17 @@ namespace ModelStationAPI.Services
         private readonly ModelStationDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IFileService _fileService;
         private readonly IMapper _mapper;
 
         public AccountService(ModelStationDbContext dbContext, IPasswordHasher<User> passwordHasher, 
-            AuthenticationSettings authenticationSettings, IMapper mapper)
+            AuthenticationSettings authenticationSettings, IMapper mapper, IFileService fileService)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _mapper = mapper;
+            _fileService = fileService;
         }
 
         public LoginResultDTO Login(LoginDTO dto)
@@ -108,6 +110,97 @@ namespace ModelStationAPI.Services
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
             if (result == PasswordVerificationResult.Failed)
                 return -2;
+
+            //Removal
+            //LikedPost
+            {
+                var likedPosts = _dbContext
+                    .LikedPosts
+                        .Where(lp => lp.UserId == userId)
+                            .ToList();
+
+                _dbContext.RemoveRange(likedPosts);
+                _dbContext.SaveChanges();
+            }
+
+            //LikedComments
+            {
+                var likedComments = _dbContext
+                    .LikedComments
+                        .Where(lc => lc.UserId == userId)
+                            .ToList();
+
+                _dbContext.LikedComments.RemoveRange(likedComments);
+                _dbContext.SaveChanges();
+            }
+
+            //FileStorage
+            {
+                var files = _dbContext
+                    .FilesStorage
+                        .Where(fs => fs.UserId == userId)
+                            .ToList();
+
+                foreach (var f in files)
+                    _fileService.Delete(f.Id, userClaims);
+
+                _dbContext.SaveChanges();
+            }
+
+            //Comments
+            {
+                var comments = _dbContext
+                    .Comments
+                        .Where(c => c.UserId == userId)
+                            .ToList();
+
+                _dbContext.RemoveRange(comments);
+                _dbContext.SaveChanges();
+            }
+
+            //Posts
+            {
+                var posts = _dbContext
+                    .Posts
+                        .Where(p => p.UserId == userId)
+                            .ToList();
+
+
+                foreach (var p in posts)
+                {
+                    //LikedPosts
+                    var lps = _dbContext
+                        .LikedPosts
+                            .Where(lp => lp.PostId == p.Id)
+                                .ToList();
+
+                    _dbContext.RemoveRange(lps);
+                    _dbContext.SaveChanges();
+
+
+                    //Comments
+                    var comments = _dbContext
+                        .Comments
+                            .Where(c => c.PostId == p.Id)
+                                .ToList();
+
+                    foreach (var c in comments)
+                    {
+                        //LikedComments
+                        var lcs = _dbContext
+                            .LikedComments
+                                .Where(lc => lc.CommentId == c.Id)
+                                    .ToList();
+
+                        _dbContext.RemoveRange(lcs);
+                        _dbContext.SaveChanges();
+                    }
+                }
+
+                _dbContext.Posts.RemoveRange(posts);
+                _dbContext.SaveChanges();            
+            }
+
 
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();

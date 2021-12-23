@@ -19,7 +19,12 @@ namespace ModelStationAPI.Authorization
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasAccessLevelAtLeast requirement)
         {
-            var roleId = Convert.ToInt32(context.User.FindFirst(c => c.Type == "RoleId").Value);
+            int roleId;
+            if (context.User != null)
+                roleId = Convert.ToInt32(context.User.FindFirst(c => c.Type == "RoleId").Value);
+            else
+                throw new NotFoundException("Token JWT jest null");
+
             var Role = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId);
             if (Role == null)
                 throw new NotFoundException("Role with this Id does not exist");

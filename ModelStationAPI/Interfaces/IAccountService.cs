@@ -10,6 +10,7 @@ namespace ModelStationAPI.Interfaces
         string GenerateJwt(LoginDTO dto);
         LoginResultDTO Login(LoginDTO dto);
         int ChangePassword(ChangePasswordDTO dto, ClaimsPrincipal userClaims);
+        int ChangeUserPassword(ChangePasswordDTO dto, ClaimsPrincipal userClaims);
         int DeleteAccount(DeleteAccountDTO dto, ClaimsPrincipal userClaims);
     }
 }

@@ -6,7 +6,7 @@ namespace ModelStationAPI.Interfaces
 {
     public interface IUserService
     {
-        bool BanUserByUserId(int id, ClaimsPrincipal userClaims);
+        bool BanUserByUserName(string userName, ClaimsPrincipal userClaims);
         bool ChangeActiveStateByUserId(int id, ClaimsPrincipal userClaims);
         int Create(CreateUserDTO dto);
         bool Delete(int id, ClaimsPrincipal userClaims);
@@ -15,7 +15,7 @@ namespace ModelStationAPI.Interfaces
         UserDTO GetById(int id);
         UserDTO GetByUserName(string userName);
         List<UserBannerDTO> SearchUsers_ReturnBanners(string userName);
-        bool UnBanUserByUserId(int id, ClaimsPrincipal userClaims);
+        bool UnBanUserByUserName(string userName, ClaimsPrincipal userClaims);
         bool UploadUserImage(CreateFileStorageDTO dto, ClaimsPrincipal userClaims);
         UserProfileDTO GetUserProfileById(string userName);
     }

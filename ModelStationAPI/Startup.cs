@@ -126,6 +126,7 @@ namespace ModelStationAPI
             services.AddScoped<ILikedPostService, LikedPostService>();
             services.AddScoped<ILikedCommentService, LikedCommentService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IRoleService, RoleService>();
 
             
 

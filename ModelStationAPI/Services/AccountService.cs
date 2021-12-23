@@ -81,9 +81,11 @@ namespace ModelStationAPI.Services
             if (user is null)
                 return -1;
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
-            if (result == PasswordVerificationResult.Failed)
+            
+             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
+             if (result == PasswordVerificationResult.Failed)
                 return -2;
+            
 
             user.PasswordHash = _passwordHasher.HashPassword(user, dto.NewPassword);
             user.LastEditDate = DateTime.Now;
@@ -93,6 +95,25 @@ namespace ModelStationAPI.Services
             return 0;
         }
 
+        public int ChangeUserPassword(ChangePasswordDTO dto, ClaimsPrincipal userClaims)
+        {
+            var user = _dbContext
+                .Users
+                    .Include(u => u.Role)
+                        .Where(u => u.UserName == dto.UserName)
+                            .FirstOrDefault();
+
+            if (user is null)
+                return -1;
+
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.NewPassword);
+            user.LastEditDate = DateTime.Now;
+
+            _dbContext.SaveChanges();
+
+            return 0;
+        }
 
         public int DeleteAccount(DeleteAccountDTO dto, ClaimsPrincipal userClaims)
         {
@@ -107,9 +128,12 @@ namespace ModelStationAPI.Services
             if (user is null)
                 return -1;
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
-            if (result == PasswordVerificationResult.Failed)
-                return -2;
+            if (Convert.ToInt32(userClaims.FindFirst(c => c.Type == "AccessLevel").Value) < 10)
+            {
+                var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
+                if (result == PasswordVerificationResult.Failed)
+                    return -2;
+            }
 
             //Removal
             //LikedPost

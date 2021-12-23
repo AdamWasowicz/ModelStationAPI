@@ -85,11 +85,11 @@ namespace ModelStationAPI.Controllers
             return NotFound();
         }
 
-        [HttpPatch("ban/{id}")]
+        [HttpPatch("ban/name/{userName}")]
         [Authorize(Policy = "IsModerator")]
-        public ActionResult BanUserById([FromRoute] int id)
+        public ActionResult BanUserById([FromRoute] string userName)
         {
-            var result = _userService.BanUserByUserId(id, User);
+            var result = _userService.BanUserByUserName(userName, User);
 
             if (result)
                 return Ok();
@@ -133,11 +133,11 @@ namespace ModelStationAPI.Controllers
             return NoContent();
         }
 
-        [HttpPatch("unban/id/{id}")]
+        [HttpPatch("unban/name/{userName}")]
         [Authorize(Policy = "IsModerator")]
-        public ActionResult UnBanUserById([FromRoute] int id)
+        public ActionResult UnBanUserById([FromRoute] string userName)
         {
-            var result = _userService.UnBanUserByUserId(id, User);
+            var result = _userService.UnBanUserByUserName(userName, User);
 
             if (result)
                 return Ok();

@@ -1,4 +1,1 @@
-﻿Important:
-
-Not Important:
-	-Ponowne zrobienie Validatorów
+﻿

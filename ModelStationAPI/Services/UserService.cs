@@ -54,17 +54,17 @@ namespace ModelStationAPI.Services
 
         //User refreactor
         //New
-        public bool BanUserByUserId(int id, ClaimsPrincipal userClaims)
+        public bool BanUserByUserName(string userName, ClaimsPrincipal userClaims)
         {
             int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
 
             var user = _dbContext
                 .Users
-                    .Where(u => u.Id == id)
+                    .Where(u => u.UserName == userName)
                         .FirstOrDefault();
 
             if (user == null)
-                throw new NotFoundException("There is no User with that Id");
+                throw new NotFoundException("There is no User");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.Ban));
@@ -79,17 +79,17 @@ namespace ModelStationAPI.Services
             return true;
         }
 
-        public bool UnBanUserByUserId(int id, ClaimsPrincipal userClaims)
+        public bool UnBanUserByUserName(string userName, ClaimsPrincipal userClaims)
         {
             int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
 
             var user = _dbContext
                 .Users
-                    .Where(u => u.Id == id)
+                    .Where(u => u.UserName == userName)
                         .FirstOrDefault();
 
             if (user == null)
-                throw new NotFoundException("There is no User with that Id");
+                throw new NotFoundException("There is no User");
 
             var authorizationResult = _authorizationService.AuthorizeAsync(userClaims,
                 user, new ResourceOperationRequirementUser(ResourceOperation.Ban));

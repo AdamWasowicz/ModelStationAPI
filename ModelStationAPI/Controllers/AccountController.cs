@@ -39,6 +39,15 @@ namespace ModelStationAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPatch("user/password")]
+        [Authorize(Policy = "IsModerator")]
+        public ActionResult<int> ChangeUserPassword([FromBody] ChangePasswordDTO dto)
+        {
+            var result = _accountService.ChangeUserPassword(dto, User);
+
+            return Ok(result);
+        }
+
         [HttpDelete]
         [Authorize(Policy = "IsUser")]
         public ActionResult<int> DeleteAccount([FromBody] DeleteAccountDTO dto)

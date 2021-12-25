@@ -23,16 +23,20 @@ namespace ModelStationAPI.Services
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IPostCategoryService _postCategoryService;
 
         public PostService(ModelStationDbContext dbContext,
             IMapper mapper, 
             IFileService fileService,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            IPostCategoryService postCategoryService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _fileService = fileService;
             _authorizationService = authorizationService;
+            _postCategoryService = postCategoryService;
+
         }
 
 
@@ -125,6 +129,16 @@ namespace ModelStationAPI.Services
                 if (postCategory != null)
                 {
                     post.PostCategoryId = postCategory.Id;
+                }
+                else
+                {
+                    CreatePostCategoryDTO newdto = new CreatePostCategoryDTO();
+                    newdto.Name = dto.PostCategoryName;
+                    newdto.Description = "Auto created";
+
+                    int newId = _postCategoryService.Create(newdto);
+
+                    post.PostCategoryId = newId;
                 }
             }
 
@@ -309,12 +323,9 @@ namespace ModelStationAPI.Services
             if (post.UserId != userId)
                 throw new NoPermissionException("You can't edit someone else's post");
 
-            //Changes
-            //if (dto.Title != null && dto.Title.Length > 0)
-                post.Title = dto.Title;
 
-            //if (dto.Text != null && dto.Text.Length > 0)
-                post.Text = dto.Text;
+            post.Title = dto.Title;
+            post.Text = dto.Text;
 
             if (dto.PostCategoryName?.Length > 0)
             {
@@ -323,7 +334,7 @@ namespace ModelStationAPI.Services
                         .Where(pc => pc.Name == dto.PostCategoryName)
                             .FirstOrDefault();
 
-                if (postCategory != null)
+                if (postCategory == null)
                 {
                     var newPostCategoryDTO = new CreatePostCategoryDTO()
                     {
@@ -331,23 +342,20 @@ namespace ModelStationAPI.Services
                         Description = "Kategoria stworzona automatycznie"
                     };
 
-                    var newPostCategory = _mapper.Map<PostCategory>(newPostCategoryDTO);
-
-                    _dbContext.PostCategories.Add(postCategory);
+                    var newId = _postCategoryService.Create(newPostCategoryDTO);
+                    post.PostCategoryId = newId;
                     _dbContext.SaveChanges();
-
-                    post.PostCategoryId = newPostCategory.Id;
-
+                }
+                else 
+                {
+                    post.PostCategoryId = postCategory.Id;
                     _dbContext.SaveChanges();
                 }
             }
             else
-            {
                 post.PostCategoryId = null;
-            }
 
             post.LastEditDate = DateTime.Now;
-
             _dbContext.SaveChanges();
 
             return true;

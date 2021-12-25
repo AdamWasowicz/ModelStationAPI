@@ -133,6 +133,7 @@ namespace ModelStationAPI.Services
         {
             var user = _dbContext
                 .Users
+                .Include(u => u.Role)
                     .Where(u => u.UserName == userName)
                         .FirstOrDefault();
 

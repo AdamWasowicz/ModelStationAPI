@@ -59,7 +59,14 @@ namespace ModelStationAPI.Services
                         .FirstOrDefault();
 
             if (likedPost == null)
-                return null;
+                return new LikedPostDTO()
+                {
+                    Id = 0,
+                    CreationDate = DateTime.Now,
+                    UserId = 0,
+                    PostId = id,
+                    Value = 0
+                };
 
             var likedPostDTO = _mapper.Map<LikedPostDTO>(likedPost);
             return likedPostDTO;

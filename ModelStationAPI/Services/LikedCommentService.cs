@@ -59,7 +59,14 @@ namespace ModelStationAPI.Services
                         .FirstOrDefault();
 
             if (likedComment == null)
-                return null;
+                return new LikedCommentDTO
+                {
+                    Id = 0,
+                    CreationDate = DateTime.Now,
+                    UserId = 0,
+                    CommentId = id,
+                    Value = 0
+                };
 
             var likedCommentDTO = _mapper.Map<LikedCommentDTO>(likedComment);
             return likedCommentDTO;
@@ -124,8 +131,10 @@ namespace ModelStationAPI.Services
             int userId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value);
             var likedComment = _dbContext
                 .LikedComments
-                    .Where(lc => lc.Id == dto.CommentId)
+                    .Where(lc => lc.CommentId == dto.CommentId)
+                    .Where(lc => lc.UserId == userId)
                         .FirstOrDefault();
+
 
             if (likedComment == null)
             {
@@ -139,7 +148,7 @@ namespace ModelStationAPI.Services
 
                 var comment = _dbContext
                     .Comments
-                        .Where(c => c.Id == newLikedComment.CommentId)
+                        .Where(c => c.Id == dto.CommentId)
                             .FirstOrDefault();
 
                 comment.Likes = comment.Likes + dto.Value;

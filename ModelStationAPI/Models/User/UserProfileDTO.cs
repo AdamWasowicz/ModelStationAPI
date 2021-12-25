@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModelStationAPI.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,11 @@ namespace ModelStationAPI.Models
         public FileStorageDTO File { get; set; }
 
 
-        //Sats
+        //Role
+        public Role Role { get; set; }
+
+
+        //Stats
         public int AmountOfPosts { get; set; }
         public int AmountOfComments { get; set; }
     }

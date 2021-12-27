@@ -147,19 +147,21 @@ namespace ModelStationAPI.Services
             _dbContext.Posts.Add(post);
             _dbContext.SaveChanges();
 
-
-            //Files
-            foreach (var file in dto.Files)
+            if (dto.Files != null)
             {
-                var createFileDto = new CreateFileStorageDTO()
+                //Files
+                foreach (var file in dto.Files)
                 {
-                    UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value),
-                    PostId = post.Id,
-                    ContentType = "POST",
-                    File = file
-                };
+                    var createFileDto = new CreateFileStorageDTO()
+                    {
+                        UserId = Convert.ToInt32(userClaims.FindFirst(c => c.Type == "UserId").Value),
+                        PostId = post.Id,
+                        ContentType = "POST",
+                        File = file
+                    };
 
-                _fileService.Upload(createFileDto, userClaims);
+                    _fileService.Upload(createFileDto, userClaims);
+                }
             }
 
 

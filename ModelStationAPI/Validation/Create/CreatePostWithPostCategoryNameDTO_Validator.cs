@@ -14,7 +14,7 @@ namespace ModelStationAPI.Validation
         {
             RuleFor(x => x.Title)
                 .NotEmpty()
-                .MaximumLength(32);
+                .MaximumLength(64);
 
 
             RuleFor(x => x.Text)

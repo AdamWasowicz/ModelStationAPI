@@ -96,6 +96,7 @@ namespace ModelStationAPI.Controllers
 
 
         [HttpGet("dtos/{postid}")]
+        [ResponseCache(Duration = 1200, VaryByQueryKeys = new[] { "postid" })]
         public ActionResult<List<FileStorageDTO>> GetFilesByPostId([FromRoute] int postid)
         {
             var result = _fileService.GetFilesByPostId(postid);

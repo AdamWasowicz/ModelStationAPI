@@ -25,9 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Files\Static\" />
     <Folder Include="Models\User\Query\" />
-    <Folder Include="Seeders\User\" />
     <Folder Include="Files\FileStorage\" />
   </ItemGroup>
 

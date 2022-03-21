@@ -23,9 +23,8 @@ namespace ModelStationAPI.Entities
         public bool IsBanned { get; set; }
         public string PasswordHash { get; set; }
 
-        //ImageSource
-        public int? FileStorageId { get; set; }
 
+        public int? FileStorageId { get; set; }
 
 
         public int RoleId { get; set; }
@@ -34,7 +33,6 @@ namespace ModelStationAPI.Entities
         public virtual List<Post> Posts { get; set; }
         public virtual List<Comment> Comments { get; set; }
 
-        //NEW
         public virtual List<LikedPost> LikedPosts { get; set; }
         public virtual List<LikedComment> LikedComments { get; set; }
     }
